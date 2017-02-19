@@ -1,11 +1,14 @@
 package com.example.shonandtomer.hilik;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.location.Address;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -13,6 +16,12 @@ public class MainActivity extends AppCompatActivity {
     private Button reportBtn;
     private TextView estimatedTxt;
     private TextView salaryTxt;
+    private Address selectedAddress = null;
+
+    private final int SETTING_ACTIVITY = 1;
+    private final int REPORT_ACTIVITY = 2;
+    private final String ADDRESS = "Address";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +34,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent settingIntent = new Intent(MainActivity.this, SettingsActivity.class);
-                startActivity(settingIntent);
+                startActivityForResult(settingIntent, SETTING_ACTIVITY);
             }
+
+
         });
 
         reportBtn.setOnClickListener(new View.OnClickListener() {
@@ -36,6 +47,25 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(reportIntent);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case (SETTING_ACTIVITY):
+                if (resultCode == Activity.RESULT_OK) {
+                    selectedAddress = data.getParcelableExtra(ADDRESS);
+                    Toast.makeText(MainActivity.this, "Address: " + selectedAddress.getAddressLine(0), Toast.LENGTH_SHORT).show();
+                } else
+                    Toast.makeText(this, "Setting activity ended with an error", Toast.LENGTH_SHORT).show();
+
+            case (REPORT_ACTIVITY):
+                if (resultCode == Activity.RESULT_OK) {
+
+                }
+        }
     }
 
     @Override

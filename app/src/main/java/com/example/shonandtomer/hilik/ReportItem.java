@@ -14,7 +14,6 @@ public class ReportItem {
         this.inDate = inDate;
         this.outDate = outDate;
     }
-
     public void setInDate(Date inDate) {
         this.inDate = inDate;
     }
