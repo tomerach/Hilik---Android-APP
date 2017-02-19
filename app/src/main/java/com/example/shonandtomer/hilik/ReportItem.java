@@ -9,10 +9,15 @@ public class ReportItem {
     private Date inDate;
     private Date outDate;
 
+<<<<<<< HEAD
     public ReportItem(Date inDate, Date outDate) {
 
         this.inDate = inDate;
         this.outDate = outDate;
+=======
+    public Date getDate() {
+        return date;
+>>>>>>> 24387f6675b750bcb0b064edb4c1b498be3c40f8
     }
 
     public void setInDate(Date inDate) {
