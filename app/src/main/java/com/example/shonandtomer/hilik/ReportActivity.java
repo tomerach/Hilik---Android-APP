@@ -3,6 +3,7 @@ package com.example.shonandtomer.hilik;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,18 +14,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
 public class ReportActivity extends AppCompatActivity {
 
     ListView listViewReport;
-
-    public static final String FIRST_COLUMN="First";
-    public static final String SECOND_COLUMN="Second";
-    public static final String THIRD_COLUMN="Third";
-    public static final String FOURTH_COLUMN="Fourth";
 
     private ArrayList<ReportItem> reportList;
 
@@ -34,10 +34,20 @@ public class ReportActivity extends AppCompatActivity {
         setContentView(R.layout.activity_report);
         this.listViewReport = (ListView) findViewById(R.id.listViewReport);
 
+
+
         reportList = new ArrayList<ReportItem>();
-        ReportItem reportItem1 = new ReportItem(new Date() , 8 , 5);
-        ReportItem reportItem2 = new ReportItem(new Date() , 8 , 7);
-        ReportItem reportItem3 = new ReportItem(new Date() , 8 , 9);
+
+        Date syntheticDate = new Date();
+        Date date = new Date();
+        syntheticDate.setHours(17);
+
+        //Log.d("timeTag", "date: " + date.toString());
+        //Log.d("timeTag", "syntheticDate: " + syntheticDate.toString());
+
+        ReportItem reportItem1 = new ReportItem(date , syntheticDate);
+        ReportItem reportItem2 = new ReportItem(date , syntheticDate);
+        ReportItem reportItem3 = new ReportItem(date , syntheticDate);
 
         reportList.add(reportItem1);
         reportList.add(reportItem2);
