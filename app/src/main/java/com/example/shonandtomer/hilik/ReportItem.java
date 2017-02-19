@@ -6,47 +6,59 @@ import java.util.Date;
  * Created by sotmazgi on 2/14/2017.
  */
 public class ReportItem {
-    private Date date;
-    private int inTime;
-    private int outTime;
-    private float totalHours;
+    private Date inDate;
+    private Date outDate;
 
-    public ReportItem(Date date, int inTime, int outTime) {
-        this.date = date;
-        this.inTime = inTime;
-        this.outTime = outTime;
-        this.totalHours = outTime - inTime;
+    public ReportItem(Date inDate, Date outDate) {
+
+        this.inDate = inDate;
+        this.outDate = outDate;
+    }
+    public void setInDate(Date inDate) {
+        this.inDate = inDate;
     }
 
-    public Date getDate() {
-        return date;
+    public void setOutDate(Date outDate) {
+        this.outDate = outDate;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public Date getInDate() {
+        return inDate;
     }
 
-    public int getInTime() {
-        return inTime;
+    public Date getOutDate() { return outDate; }
+
+    public String getTotalHours()  {
+        return timeDifference(inDate, outDate);
     }
 
-    public void setInTime(int inTime) {
-        this.inTime = inTime;
-    }
+    private String timeDifference(Date startDate, Date endDate){
 
-    public int getOutTime() {
-        return outTime;
-    }
+        //milliseconds
+        long different = endDate.getTime() - startDate.getTime();
 
-    public void setOutTime(int outTime) {
-        this.outTime = outTime;
-    }
+        long secondsInMilli = 1000;
+        long minutesInMilli = secondsInMilli * 60;
+        long hoursInMilli = minutesInMilli * 60;
+        long daysInMilli = hoursInMilli * 24;
 
-    public float getTotalHours() {
-        return totalHours;
-    }
+        long elapsedDays = different / daysInMilli;
+        different = different % daysInMilli;
 
-    public void setTotalHours(float totalHours) {
-        this.totalHours = totalHours;
+        long elapsedHours = different / hoursInMilli;
+        different = different % hoursInMilli;
+
+        long elapsedMinutes = different / minutesInMilli;
+        different = different % minutesInMilli;
+
+        long elapsedSeconds = different / secondsInMilli;
+
+        return "Total " + elapsedHours + " Hours and " + elapsedMinutes + " Minutes";
+
+       /* Log.d("timeTag", elapsedDays + " days, " +
+                        elapsedHours + " hours, " +
+                        elapsedMinutes + " minutes, " +
+                        elapsedSeconds + " seconds");
+                        */
     }
 }
