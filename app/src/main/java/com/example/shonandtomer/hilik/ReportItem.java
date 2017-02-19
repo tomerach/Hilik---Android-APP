@@ -19,7 +19,6 @@ public class ReportItem {
     }
 
     public Date getDate() {
-
         return date;
     }
 
