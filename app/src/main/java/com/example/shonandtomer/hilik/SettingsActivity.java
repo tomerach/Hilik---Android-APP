@@ -21,6 +21,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +42,7 @@ public class SettingsActivity extends AppCompatActivity {
     private EditText precentageInput;
     private TextView addressToPresent;
     private Switch extraHoursSwitch;
+    private Spinner currencySpinner;
     private Button submitBtn;
     private Button clearBtn;
     private ImageButton searchBtn;
@@ -98,6 +100,7 @@ public class SettingsActivity extends AppCompatActivity {
         precentageInput = (EditText) findViewById(R.id.precentageInput);
         addressToPresent = (TextView) findViewById(R.id.addressToPresent);
         extraHoursSwitch = (Switch) findViewById(R.id.extraHoursSwitch);
+        currencySpinner = (Spinner) findViewById(R.id.currencySpinner);
         submitBtn = (Button) findViewById(R.id.submitSettings);
         clearBtn = (Button) findViewById(R.id.clearBtn);
         searchBtn = (ImageButton) findViewById(R.id.searchBtn);
@@ -128,9 +131,9 @@ public class SettingsActivity extends AppCompatActivity {
     private void retrieveSharedPreferences() {
         final SharedPreferences settings = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
 
-        String stringifiedAddress = settings.getString("selectedAddress", "");
+        String stringifiedAddress = settings.getString("selectedAddress", null);
 
-        if(stringifiedAddress != "") {
+        if(stringifiedAddress != null) {
 
             new AsyncTask<String, Void, Void>() {
                 @Override

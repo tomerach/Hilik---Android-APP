@@ -20,6 +20,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.widget.TimePicker;
 
 public class LocationService extends Service {
 
@@ -42,20 +43,24 @@ public class LocationService extends Service {
         mLocationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
         final long maxDistance = intent.getLongExtra("maxDistance", 0);
         final Address chosenAddress = intent.getParcelableExtra("chosen address");
-        final Location target = setLatLong(chosenAddress.getLongitude(), chosenAddress.getLatitude());
+        final Location chosenLocation = setLatLong(chosenAddress.getLongitude(), chosenAddress.getLatitude());
 
         mLocationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location)
             {
-                float distance = location.distanceTo(target);
+                float distance = location.distanceTo(chosenLocation);
 
+                //Entering workplace radius
                 if (distance < maxDistance && !inRange) {
                     inRange = true;
                     makeNotification(Float.toString(distance), chosenAddress);
                 }
-                else if (distance > maxDistance) //out of range
+                //Leaving workplace radius
+                else if (distance > maxDistance && inRange) { //out of range
                     inRange = false;
+                    makeNotification(Float.toString(distance), chosenAddress);
+                }
             }
 
             @Override
@@ -100,27 +105,24 @@ public class LocationService extends Service {
     pressing the notification will trigger google maps.
      */
     private void makeNotification(String distance, Address chosenAddress) {
-        NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle("You are near the target")
-                        .setContentText("You are " + distance + " meters from the target");
 
-        //Create String formats that will pop Google Maps with a maker of the target
-        String label = "Target";
-        String uriBegin = "geo:" + chosenAddress.getLatitude() + "," + chosenAddress.getLongitude();
-        String query = chosenAddress.getLatitude() + "," + chosenAddress.getLongitude() + "(" + label + ")";
-        String encodedQuery = Uri.encode(query);
-        String uri = uriBegin + "?q=" + encodedQuery + "?z=10";
+        NotificationCompat.Builder builder = NotificationCompatBuilder();
 
-        Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        //Create String formats that will pop Google Maps with a maker of the target
+//        String label = "Target";
+//        String uriBegin = "geo:" + chosenAddress.getLatitude() + "," + chosenAddress.getLongitude();
+//        String query = chosenAddress.getLatitude() + "," + chosenAddress.getLongitude() + "(" + label + ")";
+//        String encodedQuery = Uri.encode(query);
+//        String uri = uriBegin + "?q=" + encodedQuery + "?z=10";
+//
+//        Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+//        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         //configure a sound to notification
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         builder.setSound(alarmSound);
 
-        builder.setContentIntent(contentIntent);
+      //  builder.setContentIntent(contentIntent);
         builder.setAutoCancel(true);
         builder.setLights(Color.BLUE, 500, 500);
         long[] pattern = {500, 500, 500, 500, 500, 500, 500, 500, 500};
@@ -128,5 +130,22 @@ public class LocationService extends Service {
         builder.setStyle(new NotificationCompat.InboxStyle()); // Add as notification
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(1, builder.build());
+    }
+
+    private NotificationCompat.Builder NotificationCompatBuilder()
+    {
+        TimePicker timePicker = new TimePicker(this);
+        String hour = Integer.toString(timePicker.getHour());
+        String minute = Integer.toString(timePicker.getMinute());
+
+        String startEnd = inRange ? "start" : "end";
+
+        NotificationCompat.Builder builder =
+            new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("Entering your workplace's radius")
+                .setContentText("Want to " + startEnd + " your shift at " + hour + ":" + minute + "?");
+
+        return builder;
     }
 }

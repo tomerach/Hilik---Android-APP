@@ -17,4 +17,12 @@
     <string name="precentageExample">150</string>
     <string name="submit">Submit</string>
     <string name="clear">Clear</string>
+    <string name="currency_prompt">Choose your currency</string>
+    <string name="currencyLabel">Choose your currency</string>
+
+    <string-array name="currency_array">
+        <item>₪</item>
+        <item>$</item>
+        <item>€</item>
+    </string-array>
 </resources>
