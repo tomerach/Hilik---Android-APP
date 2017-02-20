@@ -5,17 +5,26 @@ import android.content.Intent;
 import android.location.Address;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
 
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
+
+    private static final String LOG = "MainActivityLOG";
+    private DatabaseHelper db;
     private Button settingsBtn;
     private Button reportBtn;
     private TextView estimatedTxt;
     private TextView salaryTxt;
+    private Spinner dropdown;
     private Address selectedAddress = null;
 
     private final int SETTING_ACTIVITY = 1;
@@ -28,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        db = new DatabaseHelper(this);
         initUI(); //Init all constants
 
         settingsBtn.setOnClickListener(new View.OnClickListener() {
@@ -87,10 +97,27 @@ public class MainActivity extends AppCompatActivity {
     Initiate all constants
      */
     private void initUI() {
+        dropdown = (Spinner) findViewById(R.id.monthSppiner);
+        ArrayList<String> months = db.getAllAvailableMonths();
+        ArrayAdapter<String> monthsAdapter =
+                new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, months);
+        dropdown.setAdapter(monthsAdapter);
+        dropdown.setOnItemSelectedListener(this);
 
         settingsBtn = (Button) findViewById(R.id.settingsBtn);
         reportBtn = (Button) findViewById(R.id.reportBtn);
         estimatedTxt = (TextView) findViewById(R.id.estimatedTxt);
         salaryTxt = (TextView) findViewById(R.id.salaryTxt);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String monthString = (String) parent.getItemAtPosition(position);
+        Log.d(LOG, "month: " + monthString);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }

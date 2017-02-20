@@ -15,12 +15,12 @@ import java.util.Date;
  * Created by sotmazgi on 2/14/2017.
  */
 public class ListViewAdapter extends BaseAdapter     {
-    public ArrayList<ReportItem> reportList;
-    Activity activity;
 
-    ImageView dateImg;
-    TextView dateTxt;
-    TextView hoursTxt;
+    private ArrayList<ReportItem> reportList;
+    private Activity activity;
+    private ImageView dateImg;
+    private TextView dateTxt;
+    private TextView hoursTxt;
 
     public ListViewAdapter(Activity activity,ArrayList<ReportItem> list){
         super();
@@ -53,24 +53,26 @@ public class ListViewAdapter extends BaseAdapter     {
         LayoutInflater inflater=activity.getLayoutInflater();
 
         if(convertView == null){
-
             convertView=inflater.inflate(R.layout.report_item, null);
             dateImg=(ImageView) convertView.findViewById(R.id.reportItemImg);
             dateTxt=(TextView) convertView.findViewById(R.id.reportItemDate);
             hoursTxt=(TextView) convertView.findViewById(R.id.reportItemHours);
-
         }
         ReportItem reportItem = reportList.get(position);
 
-        //Get or Generate Date
-        Date inDate = reportItem.getInDate();
-        Date outDate = reportItem.getInDate();
+        //Get the Date
+        Date entry = reportItem.getEntry();
+        int day = entry.getDate();
+
+
+        int id = activity.getResources().getIdentifier(
+                "com.example.shonandtomer.hilik:drawable/d" + day, null, null);
+        dateImg.setImageResource(id);
 
         //date format
         DateFormat dateFormat = DateFormat.getDateInstance();
 
-        String dateString = dateFormat.format(inDate);
-        dateTxt.setText(dateString);
+        dateTxt.setText(dateFormat.format(entry));
         hoursTxt.setText(reportItem.getTotalHours());
 
         return convertView;

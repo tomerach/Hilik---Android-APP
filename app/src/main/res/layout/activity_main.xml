@@ -15,6 +15,13 @@
         android:layout_height="match_parent"
         android:layout_weight="5">
 
+        <Spinner
+            android:id="@+id/monthSppiner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/btn_dropdown"
+            android:spinnerMode="dropdown" />
+
         <TextView
             android:text="@string/your_estimated_salary_is"
             android:layout_width="match_parent"

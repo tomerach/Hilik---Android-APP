@@ -6,30 +6,39 @@ import java.util.Date;
  * Created by sotmazgi on 2/14/2017.
  */
 public class ReportItem {
-    private Date inDate;
-    private Date outDate;
+    private Date entry;
+    private Date exit;
 
-    public ReportItem(Date inDate, Date outDate) {
 
-        this.inDate = inDate;
-        this.outDate = outDate;
-    }
-    public void setInDate(Date inDate) {
-        this.inDate = inDate;
+    public ReportItem() {
+        this.entry = new Date();
+        this.exit = new Date();
     }
 
-    public void setOutDate(Date outDate) {
-        this.outDate = outDate;
+    public ReportItem(Date entry, Date exit) {
+        this.entry = entry;
+        this.exit = exit;
     }
 
-    public Date getInDate() {
-        return inDate;
+    public Date getEntry() {
+
+        return entry;
     }
 
-    public Date getOutDate() { return outDate; }
+    public void setEntry(Date entry) {
+        this.entry = entry;
+    }
+
+    public Date getExit() {
+        return exit;
+    }
+
+    public void setExit(Date exit) {
+        this.exit = exit;
+    }
 
     public String getTotalHours()  {
-        return timeDifference(inDate, outDate);
+        return timeDifference(entry, exit);
     }
 
     private String timeDifference(Date startDate, Date endDate){
