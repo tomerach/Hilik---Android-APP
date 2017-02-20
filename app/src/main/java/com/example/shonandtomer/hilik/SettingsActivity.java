@@ -88,8 +88,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent resultIntent = new Intent();
-                if(selectedAddress == null)
-                    //TODO: add more if statements that will check all fields
+                if(!checkIfAllFieldsAreValid())
                     Toast.makeText(SettingsActivity.this, "Please fill all fileds", Toast.LENGTH_SHORT).show();
                 else {
                     saveToSharedPreferencesFile();
@@ -99,6 +98,21 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private boolean checkIfAllFieldsAreValid() {
+        boolean isExtraTimeChecked = extraHoursSwitch.isChecked();
+
+        if(isExtraTimeChecked)
+            if(extraTimeInput.getText().toString().isEmpty() || precentageInput.getText().toString().isEmpty())
+                return false;
+
+        if(selectedAddress == null || salaryInput.getText().toString().isEmpty() ||
+            transportInput.getText().toString().isEmpty() || salaryInput.getText().toString().isEmpty()) {
+            return false;
+        }
+
+        return true;
     }
 
     private void initUI() {
@@ -135,9 +149,6 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         retrieveSharedPreferences();
-    }
-
-    private void addListenerOnSpinnerItemSelection() {
     }
 
     private void retrieveSharedPreferences() {
@@ -212,6 +223,7 @@ public class SettingsActivity extends AppCompatActivity {
         precentageInput.setText("");
         addressToPresent.setText(NO_ADDRESS_ENTERED);
         extraHoursSwitch.setChecked(false);
+        selectedAddress = null;
     }
 
     private void setAddressUsingGeocoderThread() {
