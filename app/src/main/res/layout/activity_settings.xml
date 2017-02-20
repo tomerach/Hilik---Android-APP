@@ -10,7 +10,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     android:layoutDirection="ltr"
-    android:weightSum="7"
+    android:weightSum="8"
     tools:context="com.example.shonandtomer.hilik.SettingsActivity">
 
     <LinearLayout

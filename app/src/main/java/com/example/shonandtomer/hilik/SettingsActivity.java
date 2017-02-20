@@ -25,7 +25,16 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import java.util.ArrayList;
+import java.util.List;
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.Toast;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -128,6 +137,9 @@ public class SettingsActivity extends AppCompatActivity {
         retrieveSharedPreferences();
     }
 
+    private void addListenerOnSpinnerItemSelection() {
+    }
+
     private void retrieveSharedPreferences() {
         final SharedPreferences settings = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
 
@@ -143,16 +155,17 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }.execute(stringifiedAddress);
 
-            addressToPresent.setText(settings.getString("addressToPresent", ""));
-            salaryInput.setText(settings.getString("salaryInput", ""));
-            transportInput.setText(settings.getString("transportInput", ""));
+            addressToPresent.setText(settings.getString("addressToPresent", null));
+            salaryInput.setText(settings.getString("salaryInput", null));
+            transportInput.setText(settings.getString("transportInput", null));
+            currencySpinner.setSelection(settings.getInt("currencySpinnerPos", -1));
 
             boolean isExtraChecked = settings.getBoolean("extraHoursSwitch", false);
             extraHoursSwitch.setChecked(isExtraChecked);
 
             if(isExtraChecked) {
-                extraTimeInput.setText(settings.getString("extraTimeInput", ""));
-                precentageInput.setText(settings.getString("precentageInput", ""));
+                extraTimeInput.setText(settings.getString("extraTimeInput", null));
+                precentageInput.setText(settings.getString("precentageInput", null));
             }
         }
     }
@@ -175,6 +188,8 @@ public class SettingsActivity extends AppCompatActivity {
                 editor.putString("addressToPresent", addressToPresent.getText().toString());
                 editor.putString("salaryInput", salaryInput.getText().toString());
                 editor.putString("transportInput", transportInput.getText().toString());
+                editor.putString("currencySpinnerVal", currencySpinner.getSelectedItem().toString());
+                editor.putInt("currencySpinnerPos", currencySpinner.getSelectedItemPosition());
                 editor.putBoolean("extraHoursSwitch", extraHoursSwitch.isChecked());
 
                 if(extraHoursSwitch.isChecked()) {
@@ -304,5 +319,7 @@ public class SettingsActivity extends AppCompatActivity {
             return super.getView(position, inflater, parent);
         }
     }
+
+
 }
 

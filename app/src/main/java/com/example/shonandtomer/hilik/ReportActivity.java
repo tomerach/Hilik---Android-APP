@@ -42,6 +42,7 @@ public class ReportActivity extends AppCompatActivity implements AdapterView.OnI
         setContentView(R.layout.activity_report);
         db = new DatabaseHelper(this);
 
+
         listViewReport = (ListView) findViewById(R.id.listViewReport);
         dropdown = (Spinner) findViewById(R.id.monthSppiner);
 
