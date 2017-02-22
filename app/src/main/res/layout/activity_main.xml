@@ -13,7 +13,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="5">
+        android:layout_weight="6">
 
         <Spinner
             android:id="@+id/monthSppiner"
@@ -29,7 +29,7 @@
             android:id="@+id/estimatedTxt"
             android:textAlignment="center"
             android:gravity="center"
-            android:layout_weight="5" />
+            android:layout_weight="1" />
 
         <TextView
             android:text="0$"
@@ -38,21 +38,28 @@
             android:id="@+id/salaryTxt"
             android:textAlignment="center"
             android:gravity="center"
-            android:layout_weight="5" />
+            android:layout_weight="1" />
+
+        <Button
+            android:text="@string/start_service"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/startServiceBtn"
+            android:layout_weight="1"/>
 
         <Button
             android:text="@string/settings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/settingsBtn"
-            android:layout_weight="5" />
+            android:layout_weight="1" />
 
         <Button
             android:text="@string/show_mothly_report"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/reportBtn"
-            android:layout_weight="5" />
+            android:layout_weight="1" />
 
     </LinearLayout>
 </LinearLayout>

@@ -22,15 +22,20 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.TimePicker;
 
+import java.text.DateFormat;
+import java.util.Date;
+
 public class LocationService extends Service {
 
     private LocationManager mLocationManager;
     private LocationListener mLocationListener;
     private boolean inRange = false;
+    private DatabaseHelper db;
+    private ReportItem item;
 
     private static final long LOCATION_REFRESH_TIME = 1000;
     private static final float LOCATION_REFRESH_DISTANCE = 0;
-
+    private static final int RADIUS = 100;
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -41,25 +46,29 @@ public class LocationService extends Service {
     public int onStartCommand(final Intent intent, int flags, int startId) {
 
         mLocationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
-        final long maxDistance = intent.getLongExtra("maxDistance", 0);
         final Address chosenAddress = intent.getParcelableExtra("chosen address");
         final Location chosenLocation = setLatLong(chosenAddress.getLongitude(), chosenAddress.getLatitude());
+        db = new DatabaseHelper(this);
 
         mLocationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location)
             {
                 float distance = location.distanceTo(chosenLocation);
+                Log.i("Service", "location changed, distance: " + Float.toString(distance));
 
                 //Entering workplace radius
-                if (distance < maxDistance && !inRange) {
+                if (distance < RADIUS && !inRange) {
                     inRange = true;
-                    makeNotification(Float.toString(distance), chosenAddress);
+                    makeNotificationAndReturnApproval(Float.toString(distance), chosenAddress);
+                    item = new ReportItem();
                 }
                 //Leaving workplace radius
-                else if (distance > maxDistance && inRange) { //out of range
+                else if (distance > RADIUS && inRange) { //out of range
                     inRange = false;
-                    makeNotification(Float.toString(distance), chosenAddress);
+                    item.setExit(new Date());
+                    makeNotificationAndReturnApproval(Float.toString(distance), chosenAddress);
+                    db.createReport(item);
                 }
             }
 
@@ -104,47 +113,42 @@ public class LocationService extends Service {
     Makes a notification which shows the distance from target.
     pressing the notification will trigger google maps.
      */
-    private void makeNotification(String distance, Address chosenAddress) {
+    private boolean makeNotificationAndReturnApproval(String distance, Address chosenAddress) {
 
         NotificationCompat.Builder builder = NotificationCompatBuilder();
 
-//        //Create String formats that will pop Google Maps with a maker of the target
-//        String label = "Target";
-//        String uriBegin = "geo:" + chosenAddress.getLatitude() + "," + chosenAddress.getLongitude();
-//        String query = chosenAddress.getLatitude() + "," + chosenAddress.getLongitude() + "(" + label + ")";
-//        String encodedQuery = Uri.encode(query);
-//        String uri = uriBegin + "?q=" + encodedQuery + "?z=10";
-//
-//        Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-//        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        //configure a sound to notification
-        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        builder.setSound(alarmSound);
+        builder.setContentIntent(contentIntent);
 
-      //  builder.setContentIntent(contentIntent);
-        builder.setAutoCancel(true);
-        builder.setLights(Color.BLUE, 500, 500);
-        long[] pattern = {500, 500, 500, 500, 500, 500, 500, 500, 500};
-        builder.setVibrate(pattern);
-        builder.setStyle(new NotificationCompat.InboxStyle()); // Add as notification
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(1, builder.build());
+
+        return true; //TODO: return from notification
     }
 
     private NotificationCompat.Builder NotificationCompatBuilder()
     {
-        TimePicker timePicker = new TimePicker(this);
-        String hour = Integer.toString(timePicker.getHour());
-        String minute = Integer.toString(timePicker.getMinute());
+        long[] pattern = {500, 500, 500, 500, 500, 500, 500, 500, 500};
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+        DateFormat timeFormat = DateFormat.getTimeInstance();
+        String currentTime = timeFormat.format(new Date());
 
         String startEnd = inRange ? "start" : "end";
+        String enterLeave = inRange ? "Entering" : "Leaving";
 
         NotificationCompat.Builder builder =
             new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Entering your workplace's radius")
-                .setContentText("Want to " + startEnd + " your shift at " + hour + ":" + minute + "?");
+                .setSmallIcon(R.drawable.d1)
+                .setContentTitle(enterLeave + "your workplace's radius")
+                .setContentText("Want to " + startEnd + " your shift at " + currentTime + "?")
+                .setSound(alarmSound)         //configure a sound to notification
+                .setAutoCancel(true)
+                .setLights(Color.BLUE, 500, 500)
+                .setStyle(new NotificationCompat.InboxStyle()) // Add as notification
+                .setVibrate(pattern);
 
         return builder;
     }

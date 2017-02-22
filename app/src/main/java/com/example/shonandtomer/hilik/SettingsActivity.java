@@ -152,19 +152,13 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void retrieveSharedPreferences() {
-        final SharedPreferences settings = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        final SharedPreferences settings = getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE);
 
         String stringifiedAddress = settings.getString("selectedAddress", null);
 
         if(stringifiedAddress != null) {
 
-            new AsyncTask<String, Void, Void>() {
-                @Override
-                protected Void doInBackground(String... stringifiedAddress) {
-                    selectedAddress = gson.fromJson(stringifiedAddress[0],Address.class);
-                    return null;
-                }
-            }.execute(stringifiedAddress);
+            selectedAddress = gson.fromJson(stringifiedAddress,Address.class);
 
             addressToPresent.setText(settings.getString("addressToPresent", null));
             salaryInput.setText(settings.getString("salaryInput", null));
@@ -182,35 +176,21 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void saveToSharedPreferencesFile() {
-        final ProgressDialog progress = ProgressDialog.show(this, "","Saving...", true);
+        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE).edit();
 
-        new AsyncTask<String, Void, String>()
-        {
-            @Override
-            protected String doInBackground(String... strings) {
-                return gson.toJson(selectedAddress);
-            }
+        editor.putString("selectedAddress", gson.toJson(selectedAddress));
+        editor.putString("addressToPresent", addressToPresent.getText().toString());
+        editor.putString("salaryInput", salaryInput.getText().toString());
+        editor.putString("transportInput", transportInput.getText().toString());
+        editor.putString("currencySpinnerVal", currencySpinner.getSelectedItem().toString());
+        editor.putInt("currencySpinnerPos", currencySpinner.getSelectedItemPosition());
+        editor.putBoolean("extraHoursSwitch", extraHoursSwitch.isChecked());
 
-            @Override
-            protected void onPostExecute(String stringifiedAddress) {
-                SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-
-                editor.putString("selectedAddress", stringifiedAddress);
-                editor.putString("addressToPresent", addressToPresent.getText().toString());
-                editor.putString("salaryInput", salaryInput.getText().toString());
-                editor.putString("transportInput", transportInput.getText().toString());
-                editor.putString("currencySpinnerVal", currencySpinner.getSelectedItem().toString());
-                editor.putInt("currencySpinnerPos", currencySpinner.getSelectedItemPosition());
-                editor.putBoolean("extraHoursSwitch", extraHoursSwitch.isChecked());
-
-                if(extraHoursSwitch.isChecked()) {
-                    editor.putString("extraTimeInput", extraTimeInput.getText().toString());
-                    editor.putString("precentageInput", precentageInput.getText().toString());
-                }
-                editor.commit();
-                progress.dismiss();
-            }
-        }.execute();
+        if(extraHoursSwitch.isChecked()) {
+            editor.putString("extraTimeInput", extraTimeInput.getText().toString());
+            editor.putString("precentageInput", precentageInput.getText().toString());
+        }
+        editor.commit();
     }
 
     private void clearAllViews()

@@ -1,8 +1,13 @@
 package com.example.shonandtomer.hilik;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Address;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,7 +18,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.google.gson.Gson;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
@@ -22,15 +27,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private DatabaseHelper db;
     private Button settingsBtn;
     private Button reportBtn;
+    private Button startServiceBtn;
     private TextView estimatedTxt;
     private TextView salaryTxt;
     private Spinner dropdown;
     private Address selectedAddress = null;
-
-    private final int SETTING_ACTIVITY = 1;
-    private final int REPORT_ACTIVITY = 2;
-    private final String ADDRESS = "Address";
-
+    private Intent serviceIntent = null;
+    private Gson gson;
+    private int salaryPerHour;
+    private float transportation;
+    private String currencySymbol;
+    private boolean isExtraChecked;
+    private int extraFromHour;
+    private int extraPrecentage;
+    private static final int SETTING_ACTIVITY = 1;
+    private static final int REPORT_ACTIVITY = 2;
+    private static final String ADDRESS = "Address";
+    private static final String MY_PREFS_NAME = "SettingsFile";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             public void onClick(View view) {
                 Intent settingIntent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivityForResult(settingIntent, SETTING_ACTIVITY);
+                retrieveSharedPreferences();
             }
 
 
@@ -55,6 +69,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             public void onClick(View view) {
                 Intent reportIntent = new Intent(MainActivity.this, ReportActivity.class);
                 startActivity(reportIntent);
+            }
+        });
+
+        startServiceBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(retrieveSharedPreferences()) {
+                    serviceIntent = new Intent(MainActivity.this, LocationService.class);
+                    serviceIntent.putExtra("chosen address", selectedAddress);
+                    startService(serviceIntent);
+                    Toast.makeText(MainActivity.this, "Service started", Toast.LENGTH_SHORT).show();
+                }
+                else
+                    Toast.makeText(MainActivity.this, "Please go to settings and configured your workplace address.", Toast.LENGTH_SHORT).show();
+
             }
         });
     }
@@ -81,6 +110,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onStart() {
         super.onStart();
+        ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
     }
 
     @Override
@@ -90,6 +121,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     protected void onDestroy() {
+        if(serviceIntent != null)//TODO: remove me when done
+            stopService(serviceIntent); //TODO: remove me when done
         super.onDestroy();
     }
 
@@ -106,8 +139,35 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         settingsBtn = (Button) findViewById(R.id.settingsBtn);
         reportBtn = (Button) findViewById(R.id.reportBtn);
+        startServiceBtn = (Button) findViewById(R.id.startServiceBtn);
         estimatedTxt = (TextView) findViewById(R.id.estimatedTxt);
         salaryTxt = (TextView) findViewById(R.id.salaryTxt);
+        gson = new Gson();
+
+        if(!retrieveSharedPreferences())
+            Toast.makeText(this, "Do something if no Address configured", Toast.LENGTH_SHORT).show();
+
+    }
+
+    private boolean retrieveSharedPreferences() {
+        final SharedPreferences settings = getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE);
+
+        String stringifiedAddress = settings.getString("selectedAddress", null);
+
+        if (stringifiedAddress != null) {
+            selectedAddress = gson.fromJson(stringifiedAddress, Address.class);
+            salaryPerHour = Integer.parseInt(settings.getString("salaryInput", null));
+            transportation = Float.parseFloat(settings.getString("transportInput", null));
+            currencySymbol = settings.getString("currencySpinnerVal", "₪");
+            isExtraChecked = settings.getBoolean("extraHoursSwitch", false);
+
+            if(isExtraChecked) {
+                extraFromHour = Integer.parseInt(settings.getString("extraTimeInput", null));
+                extraPrecentage = Integer.parseInt(settings.getString("precentageInput", null));
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override

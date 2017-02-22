@@ -10,219 +10,232 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     android:layoutDirection="ltr"
-    android:weightSum="8"
+    android:weightSum="9"
     tools:context="com.example.shonandtomer.hilik.SettingsActivity">
 
-    <LinearLayout
-        android:orientation="horizontal"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:weightSum="10">
-
-        <TextView
-            android:text="@string/workplaceLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="6" />
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:hint="@string/example_address"
-            android:gravity="center"
-            android:ems="10"
-            android:id="@+id/addressInput"
-            android:layout_weight="3" />
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="?android:attr/actionModeWebSearchDrawable"
-            android:id="@+id/searchBtn"
-            android:layout_weight="1" />
-
-    </LinearLayout>
-
-    <TextView
-        android:text="@string/no_address_entered_yet"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="@dimen/address_size"
-        android:id="@+id/addressToPresent"
-        android:layout_weight="1"/>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:weightSum="3">
-
-        <TextView
-            android:text="@string/salaryPerHourLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="2" />
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="numberSigned"
-            android:gravity="center"
-            android:maxLength="4"
-            android:ems="1"
-            android:hint="@string/slaryExample"
-            android:id="@+id/salaryInput"
-            android:layout_weight="1" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1">
 
-        <TextView
-            android:text="@string/transportLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="10">
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
-            android:gravity="center"
-            android:maxLength="6"
-            android:ems="1"
-            android:hint="@string/transportExample"
-            android:id="@+id/transportInput"
-            android:layout_weight="1" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:weightSum="10">
 
-    </LinearLayout>
+                <TextView
+                    android:text="@string/workplaceLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6" />
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:weightSum="10">
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:hint="@string/example_address"
+                    android:gravity="center"
+                    android:ems="10"
+                    android:id="@+id/addressInput"
+                    android:layout_weight="3" />
 
-        <TextView
-            android:text="@string/extraHoursLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="6" />
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="?android:attr/actionModeWebSearchDrawable"
+                    android:id="@+id/searchBtn"
+                    android:layout_weight="1" />
 
-        <Switch
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingRight="@dimen/activity_vertical_margin"
-            android:id="@+id/extraHoursSwitch"
-            android:layout_weight="4"
-            android:splitTrack="false"
-            android:checked="false" />
+            </LinearLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1">
-
-        <TextView
-            android:text="@string/startHourLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="numberSigned"
-            android:gravity="center"
-            android:maxLength="2"
-            android:ems="1"
-            android:hint="@string/extraTimeExample"
-            android:id="@+id/extraTimeInput"
-            android:layout_weight="1" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:weightSum="10">
-
-        <TextView
-            android:text="@string/precentageLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="6" />
-
-        <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="numberSigned"
+            <TextView
+                android:text="@string/no_address_entered_yet"
                 android:gravity="center"
-                android:maxLength="3"
-                android:ems="1"
-                android:hint="@string/precentageExample"
-                android:id="@+id/precentageInput"
-                android:layout_weight="4" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="@dimen/address_size"
+                android:id="@+id/addressToPresent"
+                android:layout_weight="1"/>
 
-    </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:weightSum="3">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:weightSum="20">
+                <TextView
+                    android:text="@string/salaryPerHourLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2" />
 
-        <TextView
-            android:text="@string/currencyLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/currencyLabel"
-            android:layout_weight="5" />
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberSigned"
+                    android:gravity="center"
+                    android:maxLength="4"
+                    android:ems="1"
+                    android:hint="@string/slaryExample"
+                    android:id="@+id/salaryInput"
+                    android:layout_weight="1" />
+            </LinearLayout>
 
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layoutDirection="rtl"
-            android:id="@+id/currencySpinner"
-            android:entries="@array/currency_array"
-            android:prompt="@string/currency_prompt"
-            android:layout_weight="15" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
 
-    </LinearLayout>
+                <TextView
+                    android:text="@string/transportLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1">
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:gravity="center"
+                    android:maxLength="6"
+                    android:ems="1"
+                    android:hint="@string/transportExample"
+                    android:id="@+id/transportInput"
+                    android:layout_weight="1" />
 
-        <Button
-            android:text="@string/submit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/submitSettings"
-            android:layout_weight="1" />
+            </LinearLayout>
 
-        <Button
-            android:text="@string/clear"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/clearBtn"
-            android:layout_weight="1" />
-    </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:weightSum="10">
+
+                <TextView
+                    android:text="@string/extraHoursLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6" />
+
+                <Switch
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="@dimen/activity_vertical_margin"
+                    android:id="@+id/extraHoursSwitch"
+                    android:layout_weight="4"
+                    android:splitTrack="false"
+                    android:checked="false" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:text="@string/startHourLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberSigned"
+                    android:gravity="center"
+                    android:maxLength="2"
+                    android:ems="1"
+                    android:hint="@string/extraTimeExample"
+                    android:id="@+id/extraTimeInput"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:weightSum="10">
+
+                <TextView
+                    android:text="@string/precentageLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6" />
+
+                <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberSigned"
+                        android:gravity="center"
+                        android:maxLength="3"
+                        android:ems="1"
+                        android:hint="@string/precentageExample"
+                        android:id="@+id/precentageInput"
+                        android:layout_weight="4" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:weightSum="20">
+
+                <TextView
+                    android:text="@string/currencyLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/currencyLabel"
+                    android:layout_weight="5" />
+
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:id="@+id/currencySpinner"
+                    android:entries="@array/currency_array"
+                    android:prompt="@string/currency_prompt"
+                    android:layout_weight="15" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <Button
+                    android:text="@string/submit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/submitSettings"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:text="@string/clear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/clearBtn"
+                    android:layout_weight="1" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>
