@@ -7,6 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:layoutDirection="ltr"
     tools:context="com.example.shonandtomer.hilik.MainActivity">
 
     <LinearLayout
@@ -40,12 +41,28 @@
             android:gravity="center"
             android:layout_weight="1" />
 
-        <Button
-            android:text="@string/start_service"
+        <LinearLayout
+            android:orientation="horizontal"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/startServiceBtn"
-            android:layout_weight="1"/>
+            android:layout_weight="1">
+
+            <Button
+                android:text="@string/start_service"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/startServiceBtn"
+                android:layout_weight="1"/>
+
+            <Button
+                android:text="@string/stop_service"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/stopServiceBtn"
+                android:layout_weight="1" />
+
+        </LinearLayout>
 
         <Button
             android:text="@string/settings"

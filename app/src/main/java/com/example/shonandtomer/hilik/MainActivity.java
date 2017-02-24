@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -19,6 +20,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.gson.Gson;
+
+import java.net.URISyntaxException;
+import java.security.Permission;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
@@ -28,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Button settingsBtn;
     private Button reportBtn;
     private Button startServiceBtn;
+    private Button stopServiceBtn;
     private TextView estimatedTxt;
     private TextView salaryTxt;
     private Spinner dropdown;
@@ -78,12 +83,31 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if(retrieveSharedPreferences()) {
                     serviceIntent = new Intent(MainActivity.this, LocationService.class);
                     serviceIntent.putExtra("chosen address", selectedAddress);
+                    saveIntentIntoSharedPreferences(serviceIntent);
                     startService(serviceIntent);
                     Toast.makeText(MainActivity.this, "Service started", Toast.LENGTH_SHORT).show();
                 }
                 else
-                    Toast.makeText(MainActivity.this, "Please go to settings and configured your workplace address.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Please go to settings and configure your workplace's address.", Toast.LENGTH_SHORT).show();
+            }
 
+            private void saveIntentIntoSharedPreferences(Intent serviceIntent) {
+                SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE).edit();
+                editor.putString("serviceIntent", serviceIntent.toURI()).commit();
+            }
+        });
+
+        stopServiceBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (serviceIntent == null)
+                    Toast.makeText(MainActivity.this, "Service is not running", Toast.LENGTH_SHORT).show();
+                else
+                {
+                    stopService(serviceIntent);
+                    serviceIntent = null;
+                    Toast.makeText(MainActivity.this, "Service stopped", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -110,8 +134,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onStart() {
         super.onStart();
-        ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED)
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
     }
 
     @Override
@@ -121,8 +145,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     protected void onDestroy() {
-        if(serviceIntent != null)//TODO: remove me when done
-            stopService(serviceIntent); //TODO: remove me when done
         super.onDestroy();
     }
 
@@ -140,17 +162,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         settingsBtn = (Button) findViewById(R.id.settingsBtn);
         reportBtn = (Button) findViewById(R.id.reportBtn);
         startServiceBtn = (Button) findViewById(R.id.startServiceBtn);
+        stopServiceBtn = (Button) findViewById(R.id.stopServiceBtn);
         estimatedTxt = (TextView) findViewById(R.id.estimatedTxt);
         salaryTxt = (TextView) findViewById(R.id.salaryTxt);
         gson = new Gson();
 
         if(!retrieveSharedPreferences())
-            Toast.makeText(this, "Do something if no Address configured", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please go to settings and configure your workplace's address.", Toast.LENGTH_SHORT).show();
 
     }
 
     private boolean retrieveSharedPreferences() {
         final SharedPreferences settings = getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE);
+
+        try {
+            String uri = settings.getString("serviceIntent", null);
+            if(uri != null)
+                serviceIntent = Intent.getIntent(uri);
+        } catch (URISyntaxException e) {
+            Toast.makeText(this, "Intent parser exeption", Toast.LENGTH_SHORT).show();
+        }
 
         String stringifiedAddress = settings.getString("selectedAddress", null);
 
