@@ -6,11 +6,13 @@ import java.util.Date;
  * Created by sotmazgi on 2/14/2017.
  */
 public class ReportItem {
+    private  int id;
     private Date entry;
     private Date exit;
 
 
     public ReportItem() {
+        this.id = 0;
         this.entry = new Date();
         this.exit = new Date();
     }
@@ -18,6 +20,14 @@ public class ReportItem {
     public ReportItem(Date entry, Date exit) {
         this.entry = entry;
         this.exit = exit;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Date getEntry() {
@@ -37,11 +47,15 @@ public class ReportItem {
         this.exit = exit;
     }
 
-    public String getTotalHours()  {
-        return timeDifference(entry, exit);
+    public String getTotalHoursSting()  {
+        long[] elapsedTime =  timeDifference(entry, exit);
+        return "Total " + elapsedTime[0] + " Hours and " + elapsedTime[1] + " Minutes";
+    }
+    public long getTotalHours(){
+        return timeDifference(entry, exit)[0];
     }
 
-    private String timeDifference(Date startDate, Date endDate){
+    private  long[] timeDifference(Date startDate, Date endDate){
 
         //milliseconds
         long different = endDate.getTime() - startDate.getTime();
@@ -62,7 +76,12 @@ public class ReportItem {
 
         long elapsedSeconds = different / secondsInMilli;
 
-        return "Total " + elapsedHours + " Hours and " + elapsedMinutes + " Minutes";
+        long[] times = new long[3];
+        times[0] = elapsedHours;
+        times[1] = elapsedMinutes;
+        times[2] = elapsedSeconds;
+
+        return times;
 
        /* Log.d("timeTag", elapsedDays + " days, " +
                         elapsedHours + " hours, " +

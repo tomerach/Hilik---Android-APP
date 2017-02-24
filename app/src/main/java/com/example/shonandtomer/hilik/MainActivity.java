@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final int REPORT_ACTIVITY = 2;
     private static final String ADDRESS = "Address";
     private static final String MY_PREFS_NAME = "SettingsFile";
+    private ArrayList<String> months;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,28 +149,49 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onDestroy();
     }
 
-    /*
-    Initiate all constants
-     */
-    private void initUI() {
-        dropdown = (Spinner) findViewById(R.id.monthSppiner);
-        ArrayList<String> months = db.getAllAvailableMonths();
+    private void setDropDown(){
+        months = db.getAllAvailableMonths();
         ArrayAdapter<String> monthsAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, months);
         dropdown.setAdapter(monthsAdapter);
         dropdown.setOnItemSelectedListener(this);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        setDropDown();
+    }
+
+    /*
+        Initiate all constants
+         */
+    private void initUI() {
+        dropdown = (Spinner) findViewById(R.id.monthSppiner);
+        setDropDown();
         settingsBtn = (Button) findViewById(R.id.settingsBtn);
         reportBtn = (Button) findViewById(R.id.reportBtn);
         startServiceBtn = (Button) findViewById(R.id.startServiceBtn);
         stopServiceBtn = (Button) findViewById(R.id.stopServiceBtn);
         estimatedTxt = (TextView) findViewById(R.id.estimatedTxt);
         salaryTxt = (TextView) findViewById(R.id.salaryTxt);
+
         gson = new Gson();
 
         if(!retrieveSharedPreferences())
             Toast.makeText(this, "Please go to settings and configure your workplace's address.", Toast.LENGTH_SHORT).show();
 
+    }
+
+    private String calculateSalary(String month){
+        ArrayList<ReportItem> reportList = db.getAllReportByMonth(DatabaseHelper.stringMonthToIntMonth(month));
+        long hours = 0;
+        for(ReportItem report: reportList){
+            hours += report.getTotalHours();
+        }
+        long salary = hours * salaryPerHour;
+        return Long.toString(salary);
     }
 
     private boolean retrieveSharedPreferences() {
@@ -204,6 +226,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String monthString = (String) parent.getItemAtPosition(position);
+        salaryTxt.setText(calculateSalary(monthString));
         Log.d(LOG, "month: " + monthString);
     }
 
