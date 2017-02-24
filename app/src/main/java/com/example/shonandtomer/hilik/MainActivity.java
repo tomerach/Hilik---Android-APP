@@ -127,19 +127,27 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onDestroy();
     }
 
-    /*
-    Initiate all constants
-     */
-    private void initUI() {
-        dropdown = (Spinner) findViewById(R.id.monthSppiner);
+    private void setDropDown(){
         months = db.getAllAvailableMonths();
         ArrayAdapter<String> monthsAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, months);
         dropdown.setAdapter(monthsAdapter);
         dropdown.setOnItemSelectedListener(this);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        setDropDown();
+    }
 
+    /*
+        Initiate all constants
+         */
+    private void initUI() {
+        dropdown = (Spinner) findViewById(R.id.monthSppiner);
+        setDropDown();
         settingsBtn = (Button) findViewById(R.id.settingsBtn);
         reportBtn = (Button) findViewById(R.id.reportBtn);
         startServiceBtn = (Button) findViewById(R.id.startServiceBtn);

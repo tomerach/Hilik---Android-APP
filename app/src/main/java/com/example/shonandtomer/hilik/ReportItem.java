@@ -6,11 +6,13 @@ import java.util.Date;
  * Created by sotmazgi on 2/14/2017.
  */
 public class ReportItem {
+    private  int id;
     private Date entry;
     private Date exit;
 
 
     public ReportItem() {
+        this.id = 0;
         this.entry = new Date();
         this.exit = new Date();
     }
@@ -18,6 +20,14 @@ public class ReportItem {
     public ReportItem(Date entry, Date exit) {
         this.entry = entry;
         this.exit = exit;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Date getEntry() {

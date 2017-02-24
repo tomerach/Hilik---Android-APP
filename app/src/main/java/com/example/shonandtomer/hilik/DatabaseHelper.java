@@ -104,12 +104,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 ReportItem report = new ReportItem();
                 String entryString = c.getString(c.getColumnIndex(Constants.reports.ENTRY));
                 String exitString = c.getString(c.getColumnIndex(Constants.reports.EXIT));
+                String idString = c.getString(c.getColumnIndex(Constants.reports.KEY_ID));
                 Log.d(LOG, "entry: " + entryString + " exit: " + exitString);
                 SimpleDateFormat formatter = new SimpleDateFormat(
                         "dd-MM-yyyy HH:mm:ss" , Locale.ENGLISH);
                 try {
                     Date entry = formatter.parse(entryString);
                     Date exit = formatter.parse(exitString);
+                    report.setId(Integer.parseInt(idString));
                     report.setEntry(entry);
                     report.setExit(exit);
                     Log.d(LOG, "Parse succeed");
@@ -147,12 +149,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 ReportItem report = new ReportItem();
                 String entryString = c.getString(c.getColumnIndex(Constants.reports.ENTRY));
                 String exitString = c.getString(c.getColumnIndex(Constants.reports.EXIT));
+                String idString = c.getString(c.getColumnIndex(Constants.reports.KEY_ID));
                 Log.d(LOG, "entry: " + entryString + " exit: " + exitString);
                 SimpleDateFormat formatter = new SimpleDateFormat(
                         "dd-MM-yyyy HH:mm:ss" , Locale.ENGLISH);
                 try {
                     Date entry = formatter.parse(entryString);
                     Date exit = formatter.parse(exitString);
+                    report.setId(Integer.parseInt(idString));
                     report.setEntry(entry);
                     report.setExit(exit);
                     Log.d(LOG, "Parse succeed");
@@ -174,7 +178,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public ArrayList<String> getAllAvailableMonths() {
         ArrayList<String> months = new ArrayList<String>();
 
-        String selectQuery = "SELECT DISTINCT " + Constants.reports.MONTH  + " FROM " + Constants.reports.TABLE_REPORTS;
+        String selectQuery = "SELECT DISTINCT " + Constants.reports.MONTH
+                + " FROM " + Constants.reports.TABLE_REPORTS
+                + " ORDER BY " + Constants.reports.MONTH + " DESC";
 
         Log.e(LOG, selectQuery);
 
@@ -193,6 +199,45 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         return months;
+    }
+
+    /*
+ * Updating a report
+ */
+    public int updateReport(ReportItem report) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Date entry = report.getEntry();
+        Date exit = report.getExit();
+
+        int day = entry.getDate();
+        int month = entry.getMonth();
+        int year = entry.getYear();
+
+        SimpleDateFormat formatter = new SimpleDateFormat(
+                "dd-MM-yyyy HH:mm:ss" , Locale.ENGLISH);
+        String entryString = formatter.format(entry);
+        String exitString = formatter.format(exit);
+
+        ContentValues values = new ContentValues();
+        values.put(Constants.reports.DAY, Integer.toString(day));
+        values.put(Constants.reports.MONTH, Integer.toString(month));
+        values.put(Constants.reports.YEAR, Integer.toString(year));
+        values.put(Constants.reports.ENTRY, entryString);
+        values.put(Constants.reports.EXIT, exitString);
+
+        // updating row
+        return db.update(Constants.reports.TABLE_REPORTS, values, Constants.reports.KEY_ID + " = ?",
+                new String[] { String.valueOf(report.getId()) });
+    }
+
+    /*
+ * Deleting a REPORT
+ */
+    public void deleteReport(long report_id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(Constants.reports.TABLE_REPORTS, Constants.reports.KEY_ID + " = ?",
+                new String[] { String.valueOf(report_id) });
     }
 
     public static String intMonthToStingMonth(int month){

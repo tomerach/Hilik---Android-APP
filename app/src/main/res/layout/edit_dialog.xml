@@ -23,31 +23,29 @@
 
         <LinearLayout
             android:orientation="horizontal"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="10dp">
 
                 <TextView
-                    android:text="MMM DD, YYYYYYY"
-                    android:layout_width="wrap_content"
+                    android:text="MAR 23,2017 "
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/entryDateBtn"
-                    android:onClick="showDatePickerDialog"
                     android:layout_weight="1"
                     android:textSize="18sp"
                     android:paddingRight="5dp"
-                    android:layout_gravity="center"
+
                     style="@android:style/Widget.DeviceDefault.Light.Spinner" />
 
                 <TextView
-                    android:text="Hh:MM:SS PMMM"
-                    android:layout_width="wrap_content"
+                    android:text="HH:MM:SS PM"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/entryTimeBtn"
-                    android:onClick="showTimePickerDialog"
                     android:layout_weight="1"
                     android:textSize="18sp"
-                    android:layout_gravity="center"
+
                     style="@android:style/Widget.DeviceDefault.Light.Spinner" />
 
         </LinearLayout>
@@ -66,33 +64,51 @@
 
         <LinearLayout
             android:orientation="horizontal"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="10dp">
 
                 <TextView
-                    android:text="MMM DD, YYYYYYY"
-                    android:layout_width="wrap_content"
+                    android:text="MAR 23,2017 "
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/exitDateBtn"
-                    android:onClick="showDatePickerDialog"
                     android:paddingRight="5dp"
                     android:layout_weight="1"
                     android:textSize="18sp"
-                    android:layout_gravity="center"
+
                     style="@android:style/Widget.DeviceDefault.Light.Spinner" />
 
                 <TextView
-                    android:text="Hh:MM:SS PMMM"
-                    android:layout_width="wrap_content"
+                    android:text="HH:MM:SS PM"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/exitTimeBtn"
-                    android:onClick="showTimePickerDialog"
                     android:layout_weight="1"
                     android:textSize="18sp"
-                    android:layout_gravity="center"
+
                     style="@android:style/Widget.DeviceDefault.Light.Spinner" />
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+                <Button
+                    android:text="Save"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/saveBtn"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:text="Delete"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/deleteBtn"
+                    android:layout_weight="1" />
         </LinearLayout>
 
 </LinearLayout>

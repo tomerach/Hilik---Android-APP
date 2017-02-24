@@ -49,10 +49,26 @@ public class ReportActivity extends AppCompatActivity implements AdapterView.OnI
     private ListViewAdapter reportListAdapter;
     private Dialog editReportDialog;
 
-    private TextView entryDateTxt;
-    private TextView entryTimeTxt;
-    private TextView exitDateTxt;
-    private TextView exitTimeTxt;
+    private static TextView entryDateTxt;
+    private static TextView entryTimeTxt;
+    private static TextView exitDateTxt;
+    private static TextView exitTimeTxt;
+
+    private Button saveBtn;
+    private Button deleteBtn;
+
+    private ReportItem reportToEdit;
+
+
+    private Date entry;
+    private Date exit;
+    // 0 = entry
+    // 1 = exit
+    private static int date;
+
+    // 0 = entry
+    // 1 = exit
+    private static int time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,11 +80,7 @@ public class ReportActivity extends AppCompatActivity implements AdapterView.OnI
         listViewReport = (ListView) findViewById(R.id.listViewReport);
         dropdown = (Spinner) findViewById(R.id.monthSppiner);
 
-        ArrayList<String> months = db.getAllAvailableMonths();
-        ArrayAdapter<String> monthsAdapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, months);
-        dropdown.setAdapter(monthsAdapter);
-        dropdown.setOnItemSelectedListener(this);
+        setDropDown();
 
         reportList = new ArrayList<>();
 
@@ -81,35 +93,136 @@ public class ReportActivity extends AppCompatActivity implements AdapterView.OnI
         this.entryTimeTxt = (TextView)editReportDialog.findViewById(R.id.entryTimeBtn);
         this.exitDateTxt = (TextView)editReportDialog.findViewById(R.id.exitDateBtn);
         this.exitTimeTxt = (TextView)editReportDialog.findViewById(R.id.exitTimeBtn);
+        this.saveBtn = (Button) editReportDialog.findViewById(R.id.saveBtn);
+        this.deleteBtn = (Button) editReportDialog.findViewById(R.id.deleteBtn);
+
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //date formatter
+                SimpleDateFormat dateFormatter = new SimpleDateFormat(
+                        "dd-MM-yyyy" , Locale.ENGLISH);
+
+                //time formatter
+                SimpleDateFormat timeFormatter = new SimpleDateFormat(
+                        "HH:mm:ss" , Locale.ENGLISH);
+
+                try {
+                    Date entryDate = dateFormatter.parse((String) entryDateTxt.getText());
+                    Date exitDate = dateFormatter.parse((String) exitDateTxt.getText());
+                    Date entryTime = timeFormatter.parse((String) entryTimeTxt.getText());
+                    Date exitTime = timeFormatter.parse((String) exitTimeTxt.getText());
+
+                    entryDate.setHours(entryTime.getHours());
+                    entryDate.setMinutes(entryTime.getMinutes());
+                    entryDate.setSeconds(entryTime.getSeconds());
+
+                    exitDate.setHours(exitTime.getHours());
+                    exitDate.setMinutes(exitTime.getMinutes());
+                    exitDate.setSeconds(exitTime.getSeconds());
+
+                    if(exitDate.before(entryDate))
+                        Toast.makeText(ReportActivity.this, "Please insert valid dates"
+                                , Toast.LENGTH_SHORT).show();
+                    else{
+                        reportToEdit.setEntry(entryDate);
+                        reportToEdit.setExit(exitDate);
+                        db.updateReport(reportToEdit);
+                        editReportDialog.dismiss();
+                        setDropDown();
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+
+
+
+            }
+        });
+
+        deleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                db.deleteReport(reportToEdit.getId());
+                editReportDialog.dismiss();
+                setDropDown();
+            }
+        });
+
+        this.entryDateTxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                date = 0;
+                showDatePickerDialog(v);
+            }
+        });
+
+        this.entryTimeTxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                time = 0;
+                showTimePickerDialog(v);
+            }
+        });
+
+        this.exitDateTxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                date = 1;
+                showDatePickerDialog(v);
+            }
+        });
+
+        this.exitTimeTxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                time = 1;
+                showTimePickerDialog(v);
+            }
+        });
+
+
 
         listViewReport.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id)
             {
-                ReportItem report= reportList.get(position);
+                reportToEdit = reportList.get(position);
+                entry = (Date) reportToEdit.getEntry().clone();
+                exit = (Date) reportToEdit.getExit().clone();
 
-                //date format
-                DateFormat dateFormat = DateFormat.getDateInstance();
+                //date formatter
+                SimpleDateFormat dateFormatter = new SimpleDateFormat(
+                        "dd-MM-yyyy" , Locale.ENGLISH);
 
-                entryDateTxt.setText(dateFormat.format(report.getEntry()));
-                exitDateTxt.setText(dateFormat.format(report.getExit()));
+                entryDateTxt.setText(dateFormatter.format(reportToEdit.getEntry()));
+                exitDateTxt.setText(dateFormatter.format(reportToEdit.getExit()));
 
-                //date format
-                DateFormat timeFormat = DateFormat.getTimeInstance();
+                //time formatter
+                SimpleDateFormat timeFormatter = new SimpleDateFormat(
+                        "HH:mm:ss" , Locale.ENGLISH);
 
-                entryTimeTxt.setText(timeFormat.format(report.getEntry()));
-                exitTimeTxt.setText(timeFormat.format(report.getExit()));
+                entryTimeTxt.setText(timeFormatter.format(reportToEdit.getEntry()));
+                exitTimeTxt.setText(timeFormatter.format(reportToEdit.getExit()));
 
                 editReportDialog.show();
 
-                int pos=position+1;
-                Toast.makeText(ReportActivity.this, Integer.toString(pos)+" Clicked", Toast.LENGTH_SHORT).show();
+                //int pos=position+1;
+                //Toast.makeText(ReportActivity.this, Integer.toString(pos)+" Clicked", Toast.LENGTH_SHORT).show();
             }
 
         });
     }
 
+    private void setDropDown(){
+        ArrayList<String> months = db.getAllAvailableMonths();
+        ArrayAdapter<String> monthsAdapter =
+                new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, months);
+        dropdown.setAdapter(monthsAdapter);
+        dropdown.setOnItemSelectedListener(this);
+    }
 
     @Override
     protected void onResume() {
@@ -174,6 +287,14 @@ public class ReportActivity extends AppCompatActivity implements AdapterView.OnI
             else
                 timeString = hourOfDay+":"+minute;
 
+            Date d = new Date(117, 2, 3, hourOfDay, minute);
+            SimpleDateFormat dateFormatter = new SimpleDateFormat(
+                    "HH:mm:ss" , Locale.ENGLISH);
+            if(time == 0)
+                entryTimeTxt.setText(dateFormatter.format(d));
+            else
+                exitTimeTxt.setText(dateFormatter.format(d));
+
         }
     }
     //******** END Time Picker on Fragment Dialog**********//
@@ -207,7 +328,13 @@ public class ReportActivity extends AppCompatActivity implements AdapterView.OnI
         public void onDateSet(DatePicker view, int year, int month, int day) {
             // Do something with the date chosen by the user
             //Toast.makeText(getContext(), day+"/"+month+1+"/"+year, Toast.LENGTH_SHORT).show();
-            dateString = year+"-"+month+1+"-"+day;
+            Date d = new Date(year - 1900,month,day);
+            SimpleDateFormat dateFormatter = new SimpleDateFormat(
+                    "dd-MM-yyyy" , Locale.ENGLISH);
+            if(date == 0)
+                entryDateTxt.setText(dateFormatter.format(d));
+            else
+                exitDateTxt.setText(dateFormatter.format(d));
         }
     }
     //******** END Date Picker on Fragment Dialog**********//
