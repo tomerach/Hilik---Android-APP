@@ -21,6 +21,9 @@
     <string name="currencyLabel">Choose your currency</string>
     <string name="start_service">Start service</string>
 
+    <string name="from_date">From Date</string>
+    <string name="to_date">To Date</string>
+
     <string-array name="currency_array">
         <item>₪</item>
         <item>$</item>

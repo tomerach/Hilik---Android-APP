@@ -37,11 +37,15 @@ public class ReportItem {
         this.exit = exit;
     }
 
-    public String getTotalHours()  {
-        return timeDifference(entry, exit);
+    public String getTotalHoursSting()  {
+        long[] elapsedTime =  timeDifference(entry, exit);
+        return "Total " + elapsedTime[0] + " Hours and " + elapsedTime[1] + " Minutes";
+    }
+    public long getTotalHours(){
+        return timeDifference(entry, exit)[0];
     }
 
-    private String timeDifference(Date startDate, Date endDate){
+    private  long[] timeDifference(Date startDate, Date endDate){
 
         //milliseconds
         long different = endDate.getTime() - startDate.getTime();
@@ -62,7 +66,12 @@ public class ReportItem {
 
         long elapsedSeconds = different / secondsInMilli;
 
-        return "Total " + elapsedHours + " Hours and " + elapsedMinutes + " Minutes";
+        long[] times = new long[3];
+        times[0] = elapsedHours;
+        times[1] = elapsedMinutes;
+        times[2] = elapsedSeconds;
+
+        return times;
 
        /* Log.d("timeTag", elapsedDays + " days, " +
                         elapsedHours + " hours, " +

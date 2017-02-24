@@ -1,10 +1,17 @@
 package com.example.shonandtomer.hilik;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.FragmentTransaction;
+import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +19,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.text.DateFormat;
@@ -35,6 +47,12 @@ public class ReportActivity extends AppCompatActivity implements AdapterView.OnI
     private DatabaseHelper db;
     private ArrayList<ReportItem> reportList;
     private ListViewAdapter reportListAdapter;
+    private Dialog editReportDialog;
+
+    private TextView entryDateTxt;
+    private TextView entryTimeTxt;
+    private TextView exitDateTxt;
+    private TextView exitTimeTxt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,11 +70,39 @@ public class ReportActivity extends AppCompatActivity implements AdapterView.OnI
         dropdown.setAdapter(monthsAdapter);
         dropdown.setOnItemSelectedListener(this);
 
+        reportList = new ArrayList<>();
+
+
+        //Dialogs:
+        this.editReportDialog = new Dialog(this);
+        this.editReportDialog.setContentView(R.layout.edit_dialog);
+
+        this.entryDateTxt = (TextView)editReportDialog.findViewById(R.id.entryDateBtn);
+        this.entryTimeTxt = (TextView)editReportDialog.findViewById(R.id.entryTimeBtn);
+        this.exitDateTxt = (TextView)editReportDialog.findViewById(R.id.exitDateBtn);
+        this.exitTimeTxt = (TextView)editReportDialog.findViewById(R.id.exitTimeBtn);
+
         listViewReport.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id)
             {
+                ReportItem report= reportList.get(position);
+
+                //date format
+                DateFormat dateFormat = DateFormat.getDateInstance();
+
+                entryDateTxt.setText(dateFormat.format(report.getEntry()));
+                exitDateTxt.setText(dateFormat.format(report.getExit()));
+
+                //date format
+                DateFormat timeFormat = DateFormat.getTimeInstance();
+
+                entryTimeTxt.setText(timeFormat.format(report.getEntry()));
+                exitTimeTxt.setText(timeFormat.format(report.getExit()));
+
+                editReportDialog.show();
+
                 int pos=position+1;
                 Toast.makeText(ReportActivity.this, Integer.toString(pos)+" Clicked", Toast.LENGTH_SHORT).show();
             }
@@ -85,4 +131,84 @@ public class ReportActivity extends AppCompatActivity implements AdapterView.OnI
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
+
+
+    private void closeDialog (Dialog myDialog){myDialog.dismiss();}
+
+
+    //******** Start Time Picker on Fragment Dialog**********//
+    public void showTimePickerDialog(View v) {
+        DialogFragment newFragment = new TimePickerFragment();
+        newFragment.show(getSupportFragmentManager(), "timePicker");
+    }
+
+    public static class TimePickerFragment extends DialogFragment
+            implements TimePickerDialog.OnTimeSetListener {
+
+        public static String timeString = "00:00";
+        public static int hour;
+        public static int min;
+
+
+        //GET WARNINGS BECAUSE HIGHER API NEEDED.
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current time as the default values for the picker
+            final android.icu.util.Calendar c = android.icu.util.Calendar.getInstance();
+            int hour = c.get(android.icu.util.Calendar.HOUR_OF_DAY);
+            int minute = c.get(android.icu.util.Calendar.MINUTE);
+
+            // Create a new instance of TimePickerDialog and return it
+            return new TimePickerDialog(getActivity(), this, hour, minute,
+                    android.text.format.DateFormat.is24HourFormat(getActivity()));
+        }
+
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            // Do something with the time chosen by the user
+            hour = hourOfDay;
+            min = minute;
+
+            if(minute<=9)
+                timeString = hourOfDay+":"+"0"+minute;
+            else
+                timeString = hourOfDay+":"+minute;
+
+        }
+    }
+    //******** END Time Picker on Fragment Dialog**********//
+
+
+    //******** Start Date Picker on Fragment Dialog**********//
+    public void showDatePickerDialog(View v) {
+        DialogFragment newFragment = new DatePickerFragment();
+        newFragment.show(getSupportFragmentManager(), "datePicker");
+    }
+
+    public static class DatePickerFragment extends DialogFragment
+            implements DatePickerDialog.OnDateSetListener {
+
+        public static String dateString = "2017-01-01";
+
+
+        //GET WARNINGS BECAUSE HIGHER API NEEDED.
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current date as the default date in the picker
+            final android.icu.util.Calendar c = android.icu.util.Calendar.getInstance();
+            int year = c.get(android.icu.util.Calendar.YEAR);
+            int month = c.get(android.icu.util.Calendar.MONTH);
+            int day = c.get(android.icu.util.Calendar.DAY_OF_MONTH);
+
+            // Create a new instance of DatePickerDialog and return it
+            return new DatePickerDialog(getActivity(), this, year, month, day);
+        }
+
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+            // Do something with the date chosen by the user
+            //Toast.makeText(getContext(), day+"/"+month+1+"/"+year, Toast.LENGTH_SHORT).show();
+            dateString = year+"-"+month+1+"-"+day;
+        }
+    }
+    //******** END Date Picker on Fragment Dialog**********//
 }

@@ -23,7 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String LOG = "DatabaseHelper";
 
     // Database Version
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
 
     // Table Create Statements
@@ -143,6 +143,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         if (c.moveToFirst()) {
             do {
+
                 ReportItem report = new ReportItem();
                 String entryString = c.getString(c.getColumnIndex(Constants.reports.ENTRY));
                 String exitString = c.getString(c.getColumnIndex(Constants.reports.EXIT));
@@ -173,7 +174,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public ArrayList<String> getAllAvailableMonths() {
         ArrayList<String> months = new ArrayList<String>();
 
-        String selectQuery = "SELECT  * FROM " + Constants.reports.TABLE_REPORTS;
+        String selectQuery = "SELECT DISTINCT " + Constants.reports.MONTH  + " FROM " + Constants.reports.TABLE_REPORTS;
 
         Log.e(LOG, selectQuery);
 

@@ -73,7 +73,7 @@ public class ListViewAdapter extends BaseAdapter     {
         DateFormat dateFormat = DateFormat.getDateInstance();
 
         dateTxt.setText(dateFormat.format(entry));
-        hoursTxt.setText(reportItem.getTotalHours());
+        hoursTxt.setText(reportItem.getTotalHoursSting());
 
         return convertView;
     }
