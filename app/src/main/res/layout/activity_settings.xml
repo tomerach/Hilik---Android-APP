@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,18 +13,18 @@
     android:layoutDirection="ltr"
     tools:context="com.example.shonandtomer.hilik.SettingsActivity">
 
+    <TextView
+        android:text="@string/workplaceLabel"
+        android:layout_width="match_parent"
+        android:layout_height="26dp"
+        android:textStyle="bold" />
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:weightSum="10">
-
-        <TextView
-            android:text="@string/workplaceLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="6" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -33,14 +34,27 @@
             android:gravity="center"
             android:ems="10"
             android:id="@+id/addressInput"
-            android:layout_weight="3" />
+            android:layout_weight="9" />
 
-        <ImageButton
+        <mehdi.sakout.fancybuttons.FancyButton
+            android:id="@+id/searchBtn"
+            android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="?android:attr/actionModeWebSearchDrawable"
-            android:id="@+id/searchBtn"
-            android:layout_weight="1" />
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            fancy:fb_borderColor="#FFFFFF"
+            fancy:fb_borderWidth="1dp"
+            fancy:fb_defaultColor="#802e57"
+            fancy:fb_focusColor="#a06ece"
+            fancy:fb_fontIconResource="&#xf002;"
+            fancy:fb_iconPosition="left"
+            fancy:fb_radius="30dp"
+            fancy:fb_text=""
+            fancy:fb_textColor="#FFFFFF"
+            android:layout_gravity="center"/>
 
     </LinearLayout>
 
@@ -51,6 +65,7 @@
         android:layout_height="match_parent"
         android:textStyle="bold"
         android:textSize="@dimen/address_size"
+        android:textColor="@color/colorPrimaryDark"
         android:id="@+id/addressToPresent"
         android:layout_weight="1"/>
 
@@ -65,12 +80,15 @@
             android:text="@string/salaryPerHourLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textStyle="bold"
             android:layout_weight="2" />
 
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="numberSigned"
+            android:layout_gravity="center"
             android:gravity="center"
             android:maxLength="4"
             android:ems="1"
@@ -89,12 +107,15 @@
             android:text="@string/transportLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_gravity="center"
             android:layout_weight="1" />
 
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="numberDecimal"
+            android:layout_gravity="center"
             android:gravity="center"
             android:maxLength="6"
             android:ems="1"
@@ -115,6 +136,8 @@
             android:text="@string/extraHoursLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_gravity="center"
             android:layout_weight="6" />
 
         <Switch
@@ -124,6 +147,7 @@
             android:id="@+id/extraHoursSwitch"
             android:layout_weight="4"
             android:splitTrack="false"
+            android:layout_gravity="center"
             android:checked="false" />
 
     </LinearLayout>
@@ -138,12 +162,15 @@
             android:text="@string/startHourLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textStyle="bold"
             android:layout_weight="1" />
 
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="numberSigned"
+            android:layout_gravity="center"
             android:gravity="center"
             android:maxLength="2"
             android:ems="1"
@@ -163,12 +190,15 @@
             android:text="@string/precentageLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textStyle="bold"
             android:layout_weight="6" />
 
         <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="numberSigned"
+                android:layout_gravity="center"
                 android:gravity="center"
                 android:maxLength="3"
                 android:ems="1"
@@ -190,6 +220,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/currencyLabel"
+            android:textStyle="bold"
+            android:layout_gravity="center"
             android:layout_weight="5" />
 
         <Spinner
@@ -197,6 +229,7 @@
             android:layout_height="wrap_content"
             android:layoutDirection="rtl"
             android:id="@+id/currencySpinner"
+            android:layout_gravity="center"
             android:entries="@array/currency_array"
             android:prompt="@string/currency_prompt"
             android:layout_weight="15" />
@@ -206,21 +239,49 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:weightSum="2">
 
-        <Button
-            android:text="@string/submit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <mehdi.sakout.fancybuttons.FancyButton
             android:id="@+id/submitSettings"
-            android:layout_weight="1" />
-
-        <Button
-            android:text="@string/clear"
+            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            fancy:fb_borderColor="#FFFFFF"
+            fancy:fb_borderWidth="1dp"
+            fancy:fb_defaultColor="#2889a1"
+            fancy:fb_focusColor="#7dd2f3"
+            fancy:fb_fontIconResource="&#xf0c7;"
+            fancy:fb_iconPosition="left"
+            fancy:fb_radius="30dp"
+            fancy:fb_text="@string/submit"
+            fancy:fb_textColor="#FFFFFF"
+            android:layout_gravity="center"/>
+
+        <mehdi.sakout.fancybuttons.FancyButton
             android:id="@+id/clearBtn"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            fancy:fb_borderColor="#FFFFFF"
+            fancy:fb_borderWidth="1dp"
+            fancy:fb_defaultColor="#2889a1"
+            fancy:fb_focusColor="#7dd2f3"
+            fancy:fb_fontIconResource="&#xf1fc;"
+            fancy:fb_iconPosition="left"
+            fancy:fb_radius="30dp"
+            fancy:fb_text="@string/clear"
+            fancy:fb_textColor="#FFFFFF"
+            android:layout_gravity="center"/>
+
     </LinearLayout>
 
 </LinearLayout>

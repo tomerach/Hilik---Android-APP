@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -22,8 +23,8 @@
             android:singleLine="true" />
 
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingRight="10dp">
 
@@ -63,8 +64,8 @@
             android:singleLine="true" />
 
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingRight="10dp">
 
@@ -94,21 +95,48 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
-                <Button
-                    android:text="Save"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/saveBtn"
-                    android:layout_weight="1" />
+            <mehdi.sakout.fancybuttons.FancyButton
+                android:id="@+id/saveBtn"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="10dp"
+                android:layout_marginTop="20dp"
+                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderWidth="1dp"
+                fancy:fb_defaultColor="#2889a1"
+                fancy:fb_focusColor="#7dd2f3"
+                fancy:fb_fontIconResource="&#xf0c7;"
+                fancy:fb_iconPosition="left"
+                fancy:fb_radius="30dp"
+                fancy:fb_text="@string/save"
+                fancy:fb_textColor="#FFFFFF" />
 
-                <Button
-                    android:text="Delete"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/deleteBtn"
-                    android:layout_weight="1" />
+            <mehdi.sakout.fancybuttons.FancyButton
+                android:id="@+id/deleteBtn"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="10dp"
+                android:layout_marginTop="20dp"
+                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderWidth="1dp"
+                fancy:fb_defaultColor="#2889a1"
+                fancy:fb_focusColor="#7dd2f3"
+                fancy:fb_fontIconResource="&#xf014;"
+                fancy:fb_iconPosition="left"
+                fancy:fb_radius="30dp"
+                fancy:fb_text="@string/delete"
+                fancy:fb_textColor="#FFFFFF" />
+
         </LinearLayout>
 
 </LinearLayout>

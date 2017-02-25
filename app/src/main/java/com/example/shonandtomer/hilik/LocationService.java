@@ -64,28 +64,32 @@ public class LocationService extends Service {
                 Log.i("Service", "lase known location, distance: " + Float.toString(lastKnownDistance));
                 Log.i("Service", "location changed, distance: " + Float.toString(distance));
 
-                if(lastKnownDistance > distance) {
+                if(!isNotificationPosed)
+                {
+                    if (lastKnownDistance > distance) {
 
-                    //Entering workplace radius
-                    if (distance < RADIUS && !inRange) {
-                        Log.i("Service", "in range");
-                        if(!isNotificationPosed) {
+                        //Entering workplace radius
+                        if (distance < RADIUS && !inRange) {
+                            Log.i("Service", "in range");
+
                             Log.i("Service", "in range with notification");
 
                             inRange = true;
                             item = new ReportItem();
                             makeNotification();
                             isNotificationPosed = true;
+
                         }
                     }
                 }
-                else {
 
-                    //Leaving workplace radius
-                    if (distance > RADIUS && inRange) { //out of range
-                        Log.i("Service", "out of range");
+                else
+                {
+                    if (lastKnownDistance < distance) {
 
-                        if(isNotificationPosed) {
+                        //Leaving workplace radius
+                        if (distance > RADIUS && inRange) { //out of range
+                            Log.i("Service", "out of range");
                             Log.i("Service", "out of range with notification");
 
                             inRange = false;
@@ -96,6 +100,7 @@ public class LocationService extends Service {
                         }
                     }
                 }
+
                 lastKnownDistance = distance;
             }
 

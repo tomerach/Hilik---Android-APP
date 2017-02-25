@@ -54,8 +54,8 @@ public class ReportActivity extends AppCompatActivity implements AdapterView.OnI
     private static TextView exitDateTxt;
     private static TextView exitTimeTxt;
 
-    private Button saveBtn;
-    private Button deleteBtn;
+    private mehdi.sakout.fancybuttons.FancyButton saveBtn;
+    private mehdi.sakout.fancybuttons.FancyButton deleteBtn;
 
     private ReportItem reportToEdit;
 
@@ -76,7 +76,6 @@ public class ReportActivity extends AppCompatActivity implements AdapterView.OnI
         setContentView(R.layout.activity_report);
         db = new DatabaseHelper(this);
 
-
         listViewReport = (ListView) findViewById(R.id.listViewReport);
         dropdown = (Spinner) findViewById(R.id.monthSppiner);
 
@@ -93,8 +92,8 @@ public class ReportActivity extends AppCompatActivity implements AdapterView.OnI
         this.entryTimeTxt = (TextView)editReportDialog.findViewById(R.id.entryTimeBtn);
         this.exitDateTxt = (TextView)editReportDialog.findViewById(R.id.exitDateBtn);
         this.exitTimeTxt = (TextView)editReportDialog.findViewById(R.id.exitTimeBtn);
-        this.saveBtn = (Button) editReportDialog.findViewById(R.id.saveBtn);
-        this.deleteBtn = (Button) editReportDialog.findViewById(R.id.deleteBtn);
+        this.saveBtn = (mehdi.sakout.fancybuttons.FancyButton) editReportDialog.findViewById(R.id.saveBtn);
+        this.deleteBtn = (mehdi.sakout.fancybuttons.FancyButton) editReportDialog.findViewById(R.id.deleteBtn);
 
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override

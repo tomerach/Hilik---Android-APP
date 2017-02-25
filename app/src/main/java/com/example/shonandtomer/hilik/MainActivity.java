@@ -29,10 +29,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private static final String LOG = "MainActivityLOG";
     private DatabaseHelper db;
-    private Button settingsBtn;
-    private Button reportBtn;
-    private Button startServiceBtn;
-    private Button stopServiceBtn;
+    private mehdi.sakout.fancybuttons.FancyButton settingsBtn;
+    private mehdi.sakout.fancybuttons.FancyButton reportBtn;
+    private mehdi.sakout.fancybuttons.FancyButton startServiceBtn;
+    private mehdi.sakout.fancybuttons.FancyButton stopServiceBtn;
     private TextView estimatedTxt;
     private TextView salaryTxt;
     private Spinner dropdown;
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private String currencySymbol;
     private boolean isExtraChecked;
     private int extraFromHour;
-    private int extraPrecentage;
+    private float extraPrecentage;
     private static final int SETTING_ACTIVITY = 1;
     private static final int REPORT_ACTIVITY = 2;
     private static final String ADDRESS = "Address";
@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         db = new DatabaseHelper(this);
         initUI(); //Init all constants
+
 
         settingsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onClick(View view) {
                 Intent reportIntent = new Intent(MainActivity.this, ReportActivity.class);
-                startActivity(reportIntent);
+                startActivityForResult(reportIntent, REPORT_ACTIVITY);
             }
         });
 
@@ -82,6 +83,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onClick(View view) {
                 if(retrieveSharedPreferences()) {
+                    if(serviceIntent != null)
+                        stopService(serviceIntent);
+
                     serviceIntent = new Intent(MainActivity.this, LocationService.class);
                     serviceIntent.putExtra("chosen address", selectedAddress);
                     saveIntentIntoSharedPreferences(serviceIntent);
@@ -121,15 +125,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case (SETTING_ACTIVITY):
                 if (resultCode == Activity.RESULT_OK) {
                     selectedAddress = data.getParcelableExtra(ADDRESS);
-                    Toast.makeText(MainActivity.this, "Address: " + selectedAddress.getAddressLine(0), Toast.LENGTH_SHORT).show();
-                } else
-                    Toast.makeText(this, "Setting activity ended with an error", Toast.LENGTH_SHORT).show();
+                    retrieveSharedPreferences();
+                }
 
             case (REPORT_ACTIVITY):
                 if (resultCode == Activity.RESULT_OK) {
 
                 }
         }
+        setDropDown();
     }
 
     @Override
@@ -160,8 +164,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onResume() {
         super.onResume();
-
-        setDropDown();
     }
 
     /*
@@ -170,10 +172,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void initUI() {
         dropdown = (Spinner) findViewById(R.id.monthSppiner);
         setDropDown();
-        settingsBtn = (Button) findViewById(R.id.settingsBtn);
-        reportBtn = (Button) findViewById(R.id.reportBtn);
-        startServiceBtn = (Button) findViewById(R.id.startServiceBtn);
-        stopServiceBtn = (Button) findViewById(R.id.stopServiceBtn);
+        settingsBtn = (mehdi.sakout.fancybuttons.FancyButton) findViewById(R.id.settingsBtn);
+        reportBtn = (mehdi.sakout.fancybuttons.FancyButton) findViewById(R.id.reportBtn);
+        startServiceBtn = (mehdi.sakout.fancybuttons.FancyButton) findViewById(R.id.startServiceBtn);
+        stopServiceBtn = (mehdi.sakout.fancybuttons.FancyButton) findViewById(R.id.stopServiceBtn);
         estimatedTxt = (TextView) findViewById(R.id.estimatedTxt);
         salaryTxt = (TextView) findViewById(R.id.salaryTxt);
 
@@ -186,12 +188,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private String calculateSalary(String month){
         ArrayList<ReportItem> reportList = db.getAllReportByMonth(DatabaseHelper.stringMonthToIntMonth(month));
+
         long hours = 0;
+        int sumRegularHours = 0;
+        int sumExtraHours = 0;
         for(ReportItem report: reportList){
-            hours += report.getTotalHours();
+            hours = report.getTotalHours();
+            if(isExtraChecked && hours > extraFromHour){
+                int extraHours = (int) (hours - extraFromHour);
+                sumExtraHours += extraHours;
+                sumRegularHours += hours - extraHours;
+            }
+            else
+                sumRegularHours += hours;
         }
-        long salary = hours * salaryPerHour;
-        return Long.toString(salary);
+
+        int days = reportList.size();
+        float salary = (sumRegularHours * salaryPerHour) + (float)(sumExtraHours * (extraPrecentage/100) * salaryPerHour) + (days * transportation) ;
+        return Float.toString(salary);
     }
 
     private boolean retrieveSharedPreferences() {
@@ -226,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String monthString = (String) parent.getItemAtPosition(position);
-        salaryTxt.setText(calculateSalary(monthString));
+        salaryTxt.setText(calculateSalary(monthString) + currencySymbol);
         Log.d(LOG, "month: " + monthString);
     }
 

@@ -11,7 +11,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Note Title"
         android:id="@+id/reportItemDate"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/reportItemImg"
@@ -22,7 +21,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="So this is how our note text should look, it's not preety but I think it should do"
         android:id="@+id/reportItemHours"
         android:layout_below="@+id/reportItemDate"
         android:layout_alignParentEnd="true"

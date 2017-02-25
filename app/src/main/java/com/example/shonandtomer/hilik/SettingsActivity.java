@@ -52,9 +52,9 @@ public class SettingsActivity extends AppCompatActivity {
     private TextView addressToPresent;
     private Switch extraHoursSwitch;
     private Spinner currencySpinner;
-    private Button submitBtn;
-    private Button clearBtn;
-    private ImageButton searchBtn;
+    private mehdi.sakout.fancybuttons.FancyButton submitBtn;
+    private mehdi.sakout.fancybuttons.FancyButton clearBtn;
+    private mehdi.sakout.fancybuttons.FancyButton searchBtn;
     private ArrayList<String> dialogList;
 
     private static final String NO_ADDRESS_ENTERED = "No Address Entered Yet.";
@@ -124,9 +124,9 @@ public class SettingsActivity extends AppCompatActivity {
         addressToPresent = (TextView) findViewById(R.id.addressToPresent);
         extraHoursSwitch = (Switch) findViewById(R.id.extraHoursSwitch);
         currencySpinner = (Spinner) findViewById(R.id.currencySpinner);
-        submitBtn = (Button) findViewById(R.id.submitSettings);
-        clearBtn = (Button) findViewById(R.id.clearBtn);
-        searchBtn = (ImageButton) findViewById(R.id.searchBtn);
+        submitBtn = (mehdi.sakout.fancybuttons.FancyButton) findViewById(R.id.submitSettings);
+        clearBtn = (mehdi.sakout.fancybuttons.FancyButton) findViewById(R.id.clearBtn);
+        searchBtn = (mehdi.sakout.fancybuttons.FancyButton) findViewById(R.id.searchBtn);
         dialogList = new ArrayList<>();
         gson = new Gson();
 
@@ -215,7 +215,7 @@ public class SettingsActivity extends AppCompatActivity {
                 Geocoder geoCoder = new Geocoder(SettingsActivity.this);
                 List<Address> addressList;
                 try {
-                    addressList = geoCoder.getFromLocationName(addressSearch[0], 5); //get address by searchable name
+                    addressList = geoCoder.getFromLocationName(addressSearch[0], 10); //get address by searchable name
                     if (addressList.isEmpty())
                         return null;
                     return addressList;

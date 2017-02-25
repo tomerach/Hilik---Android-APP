@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -19,12 +20,11 @@
 
         <Spinner
             android:id="@+id/monthSppiner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:drawable/btn_dropdown" />
+            style="@style/spinner_style" />
 
         <TextView
             android:text="@string/your_estimated_salary_is"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/estimatedTxt"
@@ -36,6 +36,7 @@
             android:text="0$"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/salaryTxt"
             android:textAlignment="center"
             android:gravity="center"
@@ -43,40 +44,97 @@
 
         <LinearLayout
             android:orientation="horizontal"
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:weightSum="2"
+            android:layout_weight="0.36">
 
-            <Button
-                android:text="@string/start_service"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+            <mehdi.sakout.fancybuttons.FancyButton
+                android:layout_weight="1"
                 android:id="@+id/startServiceBtn"
-                android:layout_weight="1"/>
+                android:layout_width="wrap_content"
+                android:layout_height="54dp"
+                android:paddingBottom="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="10dp"
+                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderWidth="1dp"
+                fancy:fb_defaultColor="#7ab800"
+                fancy:fb_focusColor="#9bd823"
+                fancy:fb_fontIconResource="&#xf04b;"
+                fancy:fb_iconPosition="left"
+                fancy:fb_radius="30dp"
+                fancy:fb_text="@string/start_service"
+                android:gravity="center"
+                android:layout_gravity="center"
+                fancy:fb_textColor="#FFFFFF" />
 
-            <Button
-                android:text="@string/stop_service"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+            <mehdi.sakout.fancybuttons.FancyButton
+                android:layout_weight="1"
                 android:id="@+id/stopServiceBtn"
-                android:layout_weight="1" />
+                android:layout_width="wrap_content"
+                android:layout_height="52dp"
+                android:paddingBottom="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="10dp"
+                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderWidth="1dp"
+                fancy:fb_defaultColor="#f61713"
+                fancy:fb_focusColor="#da4848"
+                fancy:fb_fontIconResource="&#xf04d;"
+                fancy:fb_iconPosition="left"
+                fancy:fb_radius="30dp"
+                fancy:fb_text="@string/stop_service"
+                android:gravity="center"
+                android:layout_gravity="center"
+                fancy:fb_textColor="#FFFFFF" />
 
         </LinearLayout>
 
-        <Button
-            android:text="@string/settings"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/settingsBtn"
-            android:layout_weight="1" />
-
-        <Button
-            android:text="@string/show_mothly_report"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <mehdi.sakout.fancybuttons.FancyButton
             android:id="@+id/reportBtn"
-            android:layout_weight="1" />
+            android:layout_width="226dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="10dp"
+            fancy:fb_borderColor="#FFFFFF"
+            fancy:fb_borderWidth="1dp"
+            fancy:fb_defaultColor="#2889a1"
+            fancy:fb_focusColor="#7dd2f3"
+            fancy:fb_fontIconResource="&#xf1de;"
+            fancy:fb_iconPosition="left"
+            fancy:fb_radius="30dp"
+            fancy:fb_text="@string/show_mothly_report"
+            fancy:fb_textColor="#FFFFFF"
+            android:layout_gravity="center"
+            android:layout_weight="0.17" />
+
+        <mehdi.sakout.fancybuttons.FancyButton
+            android:id="@+id/settingsBtn"
+            android:layout_width="226dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            fancy:fb_borderColor="#FFFFFF"
+            fancy:fb_borderWidth="1dp"
+            fancy:fb_defaultColor="#2889a1"
+            fancy:fb_focusColor="#7dd2f3"
+            fancy:fb_fontIconResource="&#xf0ad;"
+            fancy:fb_iconPosition="left"
+            fancy:fb_radius="30dp"
+            fancy:fb_text="@string/settings"
+            fancy:fb_textColor="#FFFFFF"
+            android:layout_gravity="center"
+            android:layout_weight="0.19" />
+
 
     </LinearLayout>
 </LinearLayout>
