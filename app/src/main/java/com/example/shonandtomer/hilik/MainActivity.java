@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private boolean isExtraChecked;
     private float extraFromHour;
     private float extraPrecentage;
+    private boolean isSharedPreferences;
     private static final int SETTING_ACTIVITY = 1;
     private static final int REPORT_ACTIVITY = 2;
     private static final String ADDRESS = "Address";
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             public void onClick(View view) {
                 Intent settingIntent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivityForResult(settingIntent, SETTING_ACTIVITY);
-                retrieveSharedPreferences();
+                isSharedPreferences = retrieveSharedPreferences();
             }
 
 
@@ -88,7 +89,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         startServiceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(retrieveSharedPreferences()) {
+                if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED)
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                isSharedPreferences = retrieveSharedPreferences();
+                if(isSharedPreferences) {
                     if(serviceIntent != null)
                         stopService(serviceIntent);
 
@@ -127,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void createServiceIntent(Address selectedAddress) {
         serviceIntent = new Intent(MainActivity.this, LocationService.class);
-        serviceIntent.putExtra("chosen address", selectedAddress);
+        //serviceIntent.putExtra("chosen address", selectedAddress);
         saveIntentIntoSharedPreferences(serviceIntent);
     }
 
@@ -139,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case (SETTING_ACTIVITY):
                 if (resultCode == Activity.RESULT_OK) {
                     selectedAddress = data.getParcelableExtra(ADDRESS);
-                    retrieveSharedPreferences();
+                    isSharedPreferences = retrieveSharedPreferences();
                     if(serviceIntent != null) {
                         createServiceIntent(selectedAddress);
                         startService(serviceIntent);
@@ -154,8 +158,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onStart() {
         super.onStart();
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED)
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+//        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED)
+//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
     }
 
     @Override
@@ -176,7 +180,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, months);
         if(months.size() == 0)
         {
-            estimatedTxt.setText("Please start your location service or add shifts manually.");
+            if(!isSharedPreferences)
+                estimatedTxt.setText("Please go to 'Settings' and configure your workplace's address.");
+            else
+                estimatedTxt.setText("Please start your location service or add shifts manually.");
             salaryTxt.setText("No Shifts Were Found");
         }
         dropdown.setAdapter(monthsAdapter);
@@ -200,13 +207,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         stopServiceBtn = (mehdi.sakout.fancybuttons.FancyButton) findViewById(R.id.stopServiceBtn);
         estimatedTxt = (TextView) findViewById(R.id.estimatedTxt);
         salaryTxt = (TextView) findViewById(R.id.salaryTxt);
-
         gson = new Gson();
-
-        if(!retrieveSharedPreferences())
-            estimatedTxt.setText("Please go to 'Settings' and configure your workplace's address.");
-        else
-            estimatedTxt.setText("Please start your location service or add shifts manually.");
+        isSharedPreferences = retrieveSharedPreferences();
 
         setDropDown();
     }
