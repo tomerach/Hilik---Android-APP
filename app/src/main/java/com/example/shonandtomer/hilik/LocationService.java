@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Location;
@@ -13,6 +14,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.FloatRange;
@@ -21,6 +23,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -28,17 +31,74 @@ import java.util.Date;
 public class LocationService extends Service {
 
     private LocationManager mLocationManager;
-    private LocationListener mLocationListener;
     private boolean inRange = false;
     private boolean isNotificationPosted = false;
     private DatabaseHelper db;
     private ReportItem item;
     private float lastKnownDistance;
+    private Location chosenLocation;
 
     private static final long LOCATION_REFRESH_TIME = 10000;
-    private static final float LOCATION_REFRESH_DISTANCE = 0;
+    private static final float LOCATION_REFRESH_DISTANCE = 10;
     private static final int RADIUS = 100;
     private static final float INITIAL_DISTANCE = 1000;
+
+    private LocationListener mLocationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location)
+        {
+            float distance = location.distanceTo(chosenLocation);
+            Log.i("Service", "lase known location, distance: " + Float.toString(lastKnownDistance));
+            Log.i("Service", "location changed, distance: " + Float.toString(distance));
+            Log.i("Service", "isNotificationPosed: " + isNotificationPosted);
+            Log.i("Service", "Time: " + new Date().toString());
+
+            if(!isNotificationPosted)
+            {
+                if (lastKnownDistance > distance) {
+
+                    //Entering workplace radius
+                    if (distance < RADIUS && !inRange) {
+                        Log.i("Service", "in range with notification");
+
+                        inRange = true;
+                        item = new ReportItem();
+                        makeNotification();
+                        isNotificationPosted = true;
+
+                    }
+                }
+            }
+
+            else
+            {
+                if (lastKnownDistance < distance) {
+
+                    //Leaving workplace radius
+                    if (distance > RADIUS && inRange) { //out of range
+                        Log.i("Service", "out of range with notification");
+
+                        inRange = false;
+                        item.setExit(new Date());
+                        db.createReport(item);
+                        makeNotification();
+                        isNotificationPosted = false;
+                    }
+                }
+            }
+
+            lastKnownDistance = distance;
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {}
+        @Override
+        public void onProviderEnabled(String provider) {}
+        @Override
+        public void onProviderDisabled(String provider) {
+            Toast.makeText( getApplicationContext(), "Please turn on your location services", Toast.LENGTH_SHORT ).show();
+        }
+    };
 
     @Nullable
     @Override
@@ -47,70 +107,15 @@ public class LocationService extends Service {
     }
 
     @Override
-    public int onStartCommand(final Intent intent, int flags, int startId) {
-
+    public int onStartCommand(final Intent intent, int flags, int startId)
+    {
         mLocationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
         final Address chosenAddress = intent.getParcelableExtra("chosen address");
-        final Location chosenLocation = setLatLong(chosenAddress.getLongitude(), chosenAddress.getLatitude());
+        chosenLocation = setLatLong(chosenAddress.getLongitude(), chosenAddress.getLatitude());
         lastKnownDistance = INITIAL_DISTANCE;
         Log.i("Service", "lase known location, distance: " + Float.toString(lastKnownDistance));
 
         db = new DatabaseHelper(this);
-
-        mLocationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location)
-            {
-                float distance = location.distanceTo(chosenLocation);
-                Log.i("Service", "lase known location, distance: " + Float.toString(lastKnownDistance));
-                Log.i("Service", "location changed, distance: " + Float.toString(distance));
-                Log.i("Service", "isNotificationPosed: " + isNotificationPosted);
-                Log.i("Service", "Time: " + new Date().toString());
-
-                if(!isNotificationPosted)
-                {
-                    if (lastKnownDistance > distance) {
-
-                        //Entering workplace radius
-                        if (distance < RADIUS && !inRange) {
-                            Log.i("Service", "in range with notification");
-
-                            inRange = true;
-                            item = new ReportItem();
-                            makeNotification();
-                            isNotificationPosted = true;
-
-                        }
-                    }
-                }
-
-                else
-                {
-                    if (lastKnownDistance < distance) {
-
-                        //Leaving workplace radius
-                        if (distance > RADIUS && inRange) { //out of range
-                            Log.i("Service", "out of range with notification");
-
-                            inRange = false;
-                            item.setExit(new Date());
-                            db.createReport(item);
-                            makeNotification();
-                            isNotificationPosted = false;
-                        }
-                    }
-                }
-
-                lastKnownDistance = distance;
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
-            @Override
-            public void onProviderEnabled(String provider) {}
-            @Override
-            public void onProviderDisabled(String provider) {}
-        };
 
         ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
         mLocationManager.requestLocationUpdates(
@@ -126,9 +131,11 @@ public class LocationService extends Service {
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
+        db.close();
         ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
         this.mLocationManager.removeUpdates(this.mLocationListener);
-        super.onDestroy();
+
     }
 
     /*

@@ -51,8 +51,8 @@ public class ReportItem {
         long[] elapsedTime =  timeDifference(entry, exit);
         return "Total " + elapsedTime[0] + " Hours and " + elapsedTime[1] + " Minutes";
     }
-    public long getTotalHours(){
-        return timeDifference(entry, exit)[0];
+    public long[] getTotalHours(){
+        return timeDifference(entry, exit);
     }
 
     private  long[] timeDifference(Date startDate, Date endDate){

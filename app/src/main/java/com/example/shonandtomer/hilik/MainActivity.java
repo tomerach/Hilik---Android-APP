@@ -2,11 +2,15 @@ package com.example.shonandtomer.hilik;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
+import android.location.LocationManager;
+import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -38,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Spinner dropdown;
     private Address selectedAddress = null;
     private Intent serviceIntent = null;
+
     private Gson gson;
     private float salaryPerHour;
     private float transportation;
@@ -50,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final String ADDRESS = "Address";
     private static final String MY_PREFS_NAME = "SettingsFile";
     private ArrayList<String> months;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,8 +170,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     protected void onDestroy() {
-
         super.onDestroy();
+        db.close();
+        Log.i(LOG, "onDestroy");
     }
 
     private void setDropDown(){
@@ -207,10 +215,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         ArrayList<ReportItem> reportList = db.getAllReportByMonth(DatabaseHelper.stringMonthToIntMonth(month));
 
         float hours = 0;
+        float minutes = 0;
         float sumRegularHours = 0;
         float sumExtraHours = 0;
         for(ReportItem report: reportList){
-            hours = report.getTotalHours();
+            hours = report.getTotalHours()[0];
+            minutes = ((float)report.getTotalHours()[1] /60);
+            Log.d(LOG, "minutes: " + minutes);
+
+            hours += minutes;
+            Log.d(LOG, "hours: " + hours);
+
             if(isExtraChecked && hours > extraFromHour){
                 float extraHours = hours - extraFromHour;
                 sumExtraHours += extraHours;
