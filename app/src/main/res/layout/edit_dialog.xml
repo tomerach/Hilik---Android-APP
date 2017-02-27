@@ -107,15 +107,15 @@
                 android:paddingRight="20dp"
                 android:paddingTop="10dp"
                 android:layout_marginTop="20dp"
-                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderColor="@color/white"
                 fancy:fb_borderWidth="1dp"
-                fancy:fb_defaultColor="#2889a1"
-                fancy:fb_focusColor="#7dd2f3"
+                fancy:fb_defaultColor="@color/greenBtn"
+                fancy:fb_focusColor="@color/greenBackBtn"
                 fancy:fb_fontIconResource="&#xf0c7;"
                 fancy:fb_iconPosition="left"
                 fancy:fb_radius="30dp"
                 fancy:fb_text="@string/save"
-                fancy:fb_textColor="#FFFFFF" />
+                fancy:fb_textColor="@color/white" />
 
             <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/deleteBtn"
@@ -127,15 +127,15 @@
                 android:paddingRight="20dp"
                 android:paddingTop="10dp"
                 android:layout_marginTop="20dp"
-                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderColor="@color/white"
                 fancy:fb_borderWidth="1dp"
-                fancy:fb_defaultColor="#2889a1"
-                fancy:fb_focusColor="#7dd2f3"
+                fancy:fb_defaultColor="@color/redBtn"
+                fancy:fb_focusColor="@color/redBackBtn"
                 fancy:fb_fontIconResource="&#xf014;"
                 fancy:fb_iconPosition="left"
                 fancy:fb_radius="30dp"
                 fancy:fb_text="@string/delete"
-                fancy:fb_textColor="#FFFFFF" />
+                fancy:fb_textColor="@color/white" />
 
         </LinearLayout>
 

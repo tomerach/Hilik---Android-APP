@@ -2,15 +2,11 @@ package com.example.shonandtomer.hilik;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
-import android.location.LocationManager;
-import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +15,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -84,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         reportBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Intent reportIntent = new Intent(MainActivity.this, ReportActivity.class);
                 startActivityForResult(reportIntent, REPORT_ACTIVITY);
             }
@@ -150,13 +146,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     }
                     estimatedTxt.setText("Start your service or add shifts manually.");
                 }
-
-            case (REPORT_ACTIVITY):
-                if (resultCode == Activity.RESULT_OK) {
-
-                }
         }
         setDropDown();
+
     }
 
     @Override
@@ -182,6 +174,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         months = db.getAllAvailableMonths();
         ArrayAdapter<String> monthsAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, months);
+        if(months.size() == 0)
+        {
+            estimatedTxt.setText("Please start your location service or add shifts manually.");
+            salaryTxt.setText("No Shifts Were Found");
+        }
         dropdown.setAdapter(monthsAdapter);
         dropdown.setOnItemSelectedListener(this);
     }
@@ -197,7 +194,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
          */
     private void initUI() {
         dropdown = (Spinner) findViewById(R.id.monthSppiner);
-        setDropDown();
         settingsBtn = (mehdi.sakout.fancybuttons.FancyButton) findViewById(R.id.settingsBtn);
         reportBtn = (mehdi.sakout.fancybuttons.FancyButton) findViewById(R.id.reportBtn);
         startServiceBtn = (mehdi.sakout.fancybuttons.FancyButton) findViewById(R.id.startServiceBtn);
@@ -212,6 +208,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         else
             estimatedTxt.setText("Please start your location service or add shifts manually.");
 
+        setDropDown();
     }
 
     private String calculateSalary(String month, String year){

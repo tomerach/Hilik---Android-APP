@@ -11,12 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
-
-/**
- * Created by sotmazgi on 2/20/2017.
- */
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     // Logcat tag
@@ -119,7 +114,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     e.printStackTrace();
                 }
 
-                // adding to todo list
                 reports.add(report);
             } while (c.moveToNext());
         }
@@ -165,7 +159,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     e.printStackTrace();
                 }
 
-                // adding to todo list
                 reports.add(report);
             } while (c.moveToNext());
         }

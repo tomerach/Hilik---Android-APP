@@ -1,50 +1,29 @@
 package com.example.shonandtomer.hilik;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.FragmentTransaction;
 import android.app.TimePickerDialog;
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.FloatingActionButton;
-import android.location.LocationManager;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.InputType;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 
 public class ReportActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private static final String LOG = "ReportActivityLOG";
     private ListView listViewReport;
     private Spinner dropdown;
     private DatabaseHelper db;
@@ -105,6 +84,7 @@ public class ReportActivity extends AppCompatActivity implements AdapterView.OnI
 
 
         fab = (FloatingActionButton)  findViewById(R.id.fab);
+
         fab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
@@ -344,6 +324,12 @@ public class ReportActivity extends AppCompatActivity implements AdapterView.OnI
         ArrayList<String> months = db.getAllAvailableMonths();
         ArrayAdapter<String> monthsAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, months);
+        if(months.size() == 0)
+        {
+            reportList = new ArrayList<>();
+            reportListAdapter = new ListViewAdapter(this, reportList);
+            listViewReport.setAdapter(reportListAdapter);
+        }
         dropdown.setAdapter(monthsAdapter);
         dropdown.setOnItemSelectedListener(this);
     }
@@ -375,10 +361,7 @@ public class ReportActivity extends AppCompatActivity implements AdapterView.OnI
 
     }
 
-
-
     private void closeDialog (Dialog myDialog){myDialog.dismiss();}
-
 
     //******** Start Time Picker on Fragment Dialog**********//
     public void showTimePickerDialog(View v) {

@@ -45,15 +45,15 @@
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:paddingTop="10dp"
-            fancy:fb_borderColor="#FFFFFF"
+            fancy:fb_borderColor="@color/white"
             fancy:fb_borderWidth="1dp"
-            fancy:fb_defaultColor="#802e57"
-            fancy:fb_focusColor="#a06ece"
+            fancy:fb_defaultColor="@color/searchColor"
+            fancy:fb_focusColor="@color/searchBackColor"
             fancy:fb_fontIconResource="&#xf002;"
             fancy:fb_iconPosition="left"
             fancy:fb_radius="30dp"
             fancy:fb_text=""
-            fancy:fb_textColor="#FFFFFF"
+            fancy:fb_textColor="@color/white"
             android:layout_gravity="center"/>
 
     </LinearLayout>
@@ -251,15 +251,15 @@
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:paddingTop="10dp"
-            fancy:fb_borderColor="#FFFFFF"
+            fancy:fb_borderColor="@color/white"
             fancy:fb_borderWidth="1dp"
-            fancy:fb_defaultColor="#2889a1"
-            fancy:fb_focusColor="#7dd2f3"
+            fancy:fb_defaultColor="@color/settingsColor"
+            fancy:fb_focusColor="@color/settingsBackColor"
             fancy:fb_fontIconResource="&#xf0c7;"
             fancy:fb_iconPosition="left"
             fancy:fb_radius="30dp"
             fancy:fb_text="@string/submit"
-            fancy:fb_textColor="#FFFFFF"
+            fancy:fb_textColor="@color/white"
             android:layout_gravity="center"/>
 
         <mehdi.sakout.fancybuttons.FancyButton
@@ -271,15 +271,15 @@
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:paddingTop="10dp"
-            fancy:fb_borderColor="#FFFFFF"
+            fancy:fb_borderColor="@color/white"
             fancy:fb_borderWidth="1dp"
-            fancy:fb_defaultColor="#2889a1"
-            fancy:fb_focusColor="#7dd2f3"
+            fancy:fb_defaultColor="@color/settingsColor"
+            fancy:fb_focusColor="@color/settingsBackColor"
             fancy:fb_fontIconResource="&#xf1fc;"
             fancy:fb_iconPosition="left"
             fancy:fb_radius="30dp"
             fancy:fb_text="@string/clear"
-            fancy:fb_textColor="#FFFFFF"
+            fancy:fb_textColor="@color/white"
             android:layout_gravity="center"/>
 
     </LinearLayout>

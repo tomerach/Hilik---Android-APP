@@ -2,9 +2,6 @@ package com.example.shonandtomer.hilik;
 
 import java.util.Date;
 
-/**
- * Created by sotmazgi on 2/14/2017.
- */
 public class ReportItem {
     private  int id;
     private Date entry;

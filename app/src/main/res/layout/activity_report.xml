@@ -37,7 +37,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
             android:layout_margin="16dp"
+            android:tint="@android:color/white"
             android:src="@android:drawable/ic_input_add"
+            app:backgroundTint="@color/greenBtn"
             app:layout_anchorGravity="bottom|right|end" />
 
 </android.support.design.widget.CoordinatorLayout>

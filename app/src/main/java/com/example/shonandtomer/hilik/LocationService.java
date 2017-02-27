@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Location;
@@ -14,15 +13,12 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.FloatRange;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.text.DateFormat;
@@ -125,7 +121,6 @@ public class LocationService extends Service {
                 mLocationListener
         );
 
-        //TODO: check sticky service
         return START_STICKY;
     }
 
@@ -168,6 +163,14 @@ public class LocationService extends Service {
         DateFormat timeFormat = DateFormat.getTimeInstance();
         String currentTime = timeFormat.format(new Date());
 
+        Intent notificationIntent;
+        if(inRange)
+            notificationIntent = new Intent(this, MainActivity.class);
+        else
+            notificationIntent = new Intent(this, ReportActivity.class);
+
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
         String startEnd = inRange ? "Starting" : "Ending";
         String enterLeave = inRange ? "Entering" : "Leaving";
 
@@ -180,6 +183,7 @@ public class LocationService extends Service {
                 .setSound(alarmSound)         //configure a sound to notification
                 .setAutoCancel(true)
                 .setLights(Color.BLUE, 500, 500)
+                .setContentIntent(contentIntent)
                 .setStyle(new NotificationCompat.InboxStyle()) // Add as notification
                 .setVibrate(pattern);
 

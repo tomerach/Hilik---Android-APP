@@ -11,9 +11,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-/**
- * Created by sotmazgi on 2/14/2017.
- */
+
 public class ListViewAdapter extends BaseAdapter     {
 
     private ArrayList<ReportItem> reportList;
@@ -30,25 +28,21 @@ public class ListViewAdapter extends BaseAdapter     {
 
     @Override
     public int getCount() {
-        // TODO Auto-generated method stub
         return reportList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        // TODO Auto-generated method stub
         return reportList.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // TODO Auto-generated method stub
 
         LayoutInflater inflater=activity.getLayoutInflater();
 
