@@ -39,11 +39,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Address selectedAddress = null;
     private Intent serviceIntent = null;
     private Gson gson;
-    private int salaryPerHour;
+    private float salaryPerHour;
     private float transportation;
     private String currencySymbol;
     private boolean isExtraChecked;
-    private int extraFromHour;
+    private float extraFromHour;
     private float extraPrecentage;
     private static final int SETTING_ACTIVITY = 1;
     private static final int REPORT_ACTIVITY = 2;
@@ -86,9 +86,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     if(serviceIntent != null)
                         stopService(serviceIntent);
 
-                    serviceIntent = new Intent(MainActivity.this, LocationService.class);
-                    serviceIntent.putExtra("chosen address", selectedAddress);
-                    saveIntentIntoSharedPreferences(serviceIntent);
+                    createServiceIntent(selectedAddress);
                     startService(serviceIntent);
                     Toast.makeText(MainActivity.this, "Service started", Toast.LENGTH_SHORT).show();
                 }
@@ -96,10 +94,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     Toast.makeText(MainActivity.this, "Please go to settings and configure your workplace's address.", Toast.LENGTH_SHORT).show();
             }
 
-            private void saveIntentIntoSharedPreferences(Intent serviceIntent) {
-                SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE).edit();
-                editor.putString("serviceIntent", serviceIntent.toURI()).commit();
-            }
+
         });
 
         stopServiceBtn.setOnClickListener(new View.OnClickListener() {
@@ -117,6 +112,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         });
     }
 
+
+    private void saveIntentIntoSharedPreferences(Intent serviceIntent)
+    {
+        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE).edit();
+        editor.putString("serviceIntent", serviceIntent.toURI()).commit();
+    }
+
+    private void createServiceIntent(Address selectedAddress) {
+        serviceIntent = new Intent(MainActivity.this, LocationService.class);
+        serviceIntent.putExtra("chosen address", selectedAddress);
+        saveIntentIntoSharedPreferences(serviceIntent);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -126,6 +134,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if (resultCode == Activity.RESULT_OK) {
                     selectedAddress = data.getParcelableExtra(ADDRESS);
                     retrieveSharedPreferences();
+                    if(serviceIntent != null) {
+                        createServiceIntent(selectedAddress);
+                        startService(serviceIntent);
+                    }
+                    estimatedTxt.setText("Start your service or add shifts manually.");
                 }
 
             case (REPORT_ACTIVITY):
@@ -150,6 +163,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     protected void onDestroy() {
+
         super.onDestroy();
     }
 
@@ -163,6 +177,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     protected void onResume() {
+        setDropDown();
         super.onResume();
     }
 
@@ -182,20 +197,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         gson = new Gson();
 
         if(!retrieveSharedPreferences())
-            Toast.makeText(this, "Please go to settings and configure your workplace's address.", Toast.LENGTH_SHORT).show();
+            estimatedTxt.setText("Please go to 'Settings' and configure your workplace's address.");
+        else
+            estimatedTxt.setText("Please start your location service or add shifts manually.");
 
     }
 
     private String calculateSalary(String month){
         ArrayList<ReportItem> reportList = db.getAllReportByMonth(DatabaseHelper.stringMonthToIntMonth(month));
 
-        long hours = 0;
-        int sumRegularHours = 0;
-        int sumExtraHours = 0;
+        float hours = 0;
+        float sumRegularHours = 0;
+        float sumExtraHours = 0;
         for(ReportItem report: reportList){
             hours = report.getTotalHours();
             if(isExtraChecked && hours > extraFromHour){
-                int extraHours = (int) (hours - extraFromHour);
+                float extraHours = hours - extraFromHour;
                 sumExtraHours += extraHours;
                 sumRegularHours += hours - extraHours;
             }
@@ -204,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         int days = reportList.size();
-        float salary = (sumRegularHours * salaryPerHour) + (float)(sumExtraHours * (extraPrecentage/100) * salaryPerHour) + (days * transportation) ;
+        float salary = (sumRegularHours * salaryPerHour) + (sumExtraHours * (extraPrecentage/100) * salaryPerHour) + (days * transportation) ;
         return Float.toString(salary);
     }
 
@@ -229,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             isExtraChecked = settings.getBoolean("extraHoursSwitch", false);
 
             if(isExtraChecked) {
-                extraFromHour = Integer.parseInt(settings.getString("extraTimeInput", null));
+                extraFromHour = Float.parseFloat(settings.getString("extraTimeInput", null));
                 extraPrecentage = Integer.parseInt(settings.getString("precentageInput", null));
             }
             return true;
@@ -240,6 +257,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String monthString = (String) parent.getItemAtPosition(position);
+        estimatedTxt.setText("Your Estimated Salary for " + monthString + " Is:");
         salaryTxt.setText(calculateSalary(monthString) + currencySymbol);
         Log.d(LOG, "month: " + monthString);
     }

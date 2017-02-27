@@ -30,7 +30,7 @@ public class LocationService extends Service {
     private LocationManager mLocationManager;
     private LocationListener mLocationListener;
     private boolean inRange = false;
-    private boolean isNotificationPosed = false;
+    private boolean isNotificationPosted = false;
     private DatabaseHelper db;
     private ReportItem item;
     private float lastKnownDistance;
@@ -38,6 +38,7 @@ public class LocationService extends Service {
     private static final long LOCATION_REFRESH_TIME = 10000;
     private static final float LOCATION_REFRESH_DISTANCE = 0;
     private static final int RADIUS = 100;
+    private static final float INITIAL_DISTANCE = 1000;
 
     @Nullable
     @Override
@@ -51,7 +52,7 @@ public class LocationService extends Service {
         mLocationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
         final Address chosenAddress = intent.getParcelableExtra("chosen address");
         final Location chosenLocation = setLatLong(chosenAddress.getLongitude(), chosenAddress.getLatitude());
-        lastKnownDistance = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).distanceTo(chosenLocation);
+        lastKnownDistance = INITIAL_DISTANCE;
         Log.i("Service", "lase known location, distance: " + Float.toString(lastKnownDistance));
 
         db = new DatabaseHelper(this);
@@ -63,21 +64,21 @@ public class LocationService extends Service {
                 float distance = location.distanceTo(chosenLocation);
                 Log.i("Service", "lase known location, distance: " + Float.toString(lastKnownDistance));
                 Log.i("Service", "location changed, distance: " + Float.toString(distance));
+                Log.i("Service", "isNotificationPosed: " + isNotificationPosted);
+                Log.i("Service", "Time: " + new Date().toString());
 
-                if(!isNotificationPosed)
+                if(!isNotificationPosted)
                 {
                     if (lastKnownDistance > distance) {
 
                         //Entering workplace radius
                         if (distance < RADIUS && !inRange) {
-                            Log.i("Service", "in range");
-
                             Log.i("Service", "in range with notification");
 
                             inRange = true;
                             item = new ReportItem();
                             makeNotification();
-                            isNotificationPosed = true;
+                            isNotificationPosted = true;
 
                         }
                     }
@@ -89,14 +90,13 @@ public class LocationService extends Service {
 
                         //Leaving workplace radius
                         if (distance > RADIUS && inRange) { //out of range
-                            Log.i("Service", "out of range");
                             Log.i("Service", "out of range with notification");
 
                             inRange = false;
                             item.setExit(new Date());
                             db.createReport(item);
                             makeNotification();
-                            isNotificationPosed = false;
+                            isNotificationPosted = false;
                         }
                     }
                 }
@@ -120,6 +120,7 @@ public class LocationService extends Service {
                 mLocationListener
         );
 
+        //TODO: check sticky service
         return START_STICKY;
     }
 
@@ -145,15 +146,9 @@ public class LocationService extends Service {
     Makes a notification which shows the distance from target.
     pressing the notification will trigger google maps.
      */
-    private void makeNotification() {
-
+    private void makeNotification()
+    {
         NotificationCompat.Builder builder = NotificationCompatBuilder();
-
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        builder.setContentIntent(contentIntent);
-
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(1, builder.build());
     }
@@ -171,9 +166,10 @@ public class LocationService extends Service {
 
         NotificationCompat.Builder builder =
             new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.hilik)
+                .setSmallIcon(R.mipmap.location_shekel)
+                    .setColor(Color.rgb(163,0,0))
                 .setContentTitle(enterLeave + " your workplace's radius")
-                .setContentText(startEnd + " your shift at " + currentTime + "\n Have a great day!")
+                .setContentText(startEnd + " your shift at " + currentTime)
                 .setSound(alarmSound)         //configure a sound to notification
                 .setAutoCancel(true)
                 .setLights(Color.BLUE, 500, 500)

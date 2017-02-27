@@ -28,16 +28,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/estimatedTxt"
+            android:textColor="#3d5c5b"
             android:textAlignment="center"
             android:gravity="center"
             android:layout_weight="1" />
 
         <TextView
-            android:text="0$"
+            android:text="@string/no_shifts_were_found"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/salaryTxt"
+            android:textSize="30dp"
+            android:paddingBottom="20dp"
+            android:textStyle="bold"
             android:textAlignment="center"
             android:gravity="center"
             android:layout_weight="1" />
@@ -79,7 +83,7 @@
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:paddingTop="10dp"
-                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderColor="#ffffff"
                 fancy:fb_borderWidth="1dp"
                 fancy:fb_defaultColor="#f61713"
                 fancy:fb_focusColor="#da4848"
@@ -105,13 +109,13 @@
             android:layout_marginTop="10dp"
             fancy:fb_borderColor="#FFFFFF"
             fancy:fb_borderWidth="1dp"
-            fancy:fb_defaultColor="#2889a1"
-            fancy:fb_focusColor="#7dd2f3"
+            fancy:fb_defaultColor="#73eae6"
+            fancy:fb_focusColor="#ef93cc"
             fancy:fb_fontIconResource="&#xf1de;"
             fancy:fb_iconPosition="left"
             fancy:fb_radius="30dp"
             fancy:fb_text="@string/show_mothly_report"
-            fancy:fb_textColor="#FFFFFF"
+            fancy:fb_textColor="#000000"
             android:layout_gravity="center"
             android:layout_weight="0.17" />
 
@@ -123,7 +127,7 @@
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:paddingTop="10dp"
-            fancy:fb_borderColor="#FFFFFF"
+            fancy:fb_borderColor="#dacbd8"
             fancy:fb_borderWidth="1dp"
             fancy:fb_defaultColor="#2889a1"
             fancy:fb_focusColor="#7dd2f3"
@@ -131,7 +135,7 @@
             fancy:fb_iconPosition="left"
             fancy:fb_radius="30dp"
             fancy:fb_text="@string/settings"
-            fancy:fb_textColor="#FFFFFF"
+            fancy:fb_textColor="#000000"
             android:layout_gravity="center"
             android:layout_weight="0.19" />
 
