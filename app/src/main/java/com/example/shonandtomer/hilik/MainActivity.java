@@ -24,6 +24,7 @@ import com.google.gson.Gson;
 import java.net.URISyntaxException;
 import java.security.Permission;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
@@ -58,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         db = new DatabaseHelper(this);
         initUI(); //Init all constants
+
+
 
 
         settingsBtn.setOnClickListener(new View.OnClickListener() {
@@ -203,14 +206,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-    private String calculateSalary(String month){
-        ArrayList<ReportItem> reportList = db.getAllReportByMonth(DatabaseHelper.stringMonthToIntMonth(month));
+    private String calculateSalary(String month, String year){
+        ArrayList<ReportItem> reportList = db.getAllReportByMonth(DatabaseHelper.stringMonthToIntMonth(month) , Integer.parseInt(year) - 1900);
 
         float hours = 0;
         float sumRegularHours = 0;
         float sumExtraHours = 0;
         for(ReportItem report: reportList){
-            hours = report.getTotalHours();
+            hours = report.getTotalHours()[0];
             if(isExtraChecked && hours > extraFromHour){
                 float extraHours = hours - extraFromHour;
                 sumExtraHours += extraHours;
@@ -256,10 +259,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String monthString = (String) parent.getItemAtPosition(position);
-        estimatedTxt.setText("Your Estimated Salary for " + monthString + " Is:");
-        salaryTxt.setText(calculateSalary(monthString) + currencySymbol);
-        Log.d(LOG, "month: " + monthString);
+        String monthAndYearString = (String) parent.getItemAtPosition(position);
+
+        String[] tokens = monthAndYearString.split(" ");
+        //if(tokens.length!=2){throw new IllegalArgumentException();}
+        String month = tokens[0];
+        String year = tokens[1];
+
+        estimatedTxt.setText("Your Estimated Salary for " + monthAndYearString + " Is:");
+        salaryTxt.setText(calculateSalary(month, year) + currencySymbol);
+        Log.d(LOG, "month: " + month);
     }
 
     @Override

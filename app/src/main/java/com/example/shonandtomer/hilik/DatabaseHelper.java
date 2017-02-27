@@ -130,12 +130,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /*
  * getting all reports under single month
  * */
-    public ArrayList<ReportItem> getAllReportByMonth(int month) {
+    public ArrayList<ReportItem> getAllReportByMonth(int month, int year) {
         ArrayList<ReportItem> reports = new ArrayList<ReportItem>();
 
         String selectQuery = "SELECT  * FROM " + Constants.reports.TABLE_REPORTS
                 + " rp WHERE rp."
-                + Constants.reports.MONTH + " = '" + month + "'" ;
+                + Constants.reports.MONTH + " = '" + month + "'"
+                + " AND " + Constants.reports.YEAR + " = '" + year + "'";
 
         Log.e(LOG, selectQuery);
 
@@ -178,9 +179,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public ArrayList<String> getAllAvailableMonths() {
         ArrayList<String> months = new ArrayList<String>();
 
-        String selectQuery = "SELECT DISTINCT " + Constants.reports.MONTH
+        String selectQuery = "SELECT " + Constants.reports.MONTH + " ," + Constants.reports.YEAR
                 + " FROM " + Constants.reports.TABLE_REPORTS
-                + " ORDER BY " + Constants.reports.MONTH + " DESC";
+                + " GROUP BY " + Constants.reports.MONTH + " ," + Constants.reports.YEAR
+                + " ORDER BY " + Constants.reports.YEAR + " DESC ," + Constants.reports.MONTH + " DESC";
 
         Log.e(LOG, selectQuery);
 
@@ -192,8 +194,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             do {
 
                 String monthString = c.getString(c.getColumnIndex(Constants.reports.MONTH));
+                String yearString = c.getString(c.getColumnIndex(Constants.reports.YEAR));
+
+                int year = 1900 + Integer.parseInt(yearString);
                 // adding to months list
-                months.add(intMonthToStingMonth(Integer.parseInt(monthString)));
+                months.add(intMonthToStingMonth(Integer.parseInt(monthString)) + " " + year);
 
             } while (c.moveToNext());
         }
