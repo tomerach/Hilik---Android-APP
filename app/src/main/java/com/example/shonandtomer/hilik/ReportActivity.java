@@ -9,6 +9,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.FloatingActionButton;
+import android.location.LocationManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -476,5 +477,12 @@ public class ReportActivity extends AppCompatActivity implements AdapterView.OnI
 
         }
     }
-    //******** END Date Picker on Fragment Dialog**********//
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        db.close();
+    }
+//******** END Date Picker on Fragment Dialog**********//
 }
+
